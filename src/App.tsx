@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import Box from '@mui/material/Box';
+import { Button, IconButton, InputAdornment, Paper, TextField } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-function App() {
-  const [count, setCount] = useState(0)
+
+export function App() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Box sx={{ height: '100vh', width: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Paper elevation={3} sx={{ width: 350, my: 4, mx: 2, display: 'flex', flexDirection: 'column', rowGap: 1 }}>
+        <TextField label="Email" variant="outlined" size="small" />
+        <TextField label="Senha" variant="outlined" size="small"
+          type={showPassword ? 'text' : 'password'}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>,
+          }}
+        />
+        <Button variant='contained' sx={{ mt: 1, textTransform: 'none' }}>Entrar</Button>
+        <Button variant='outlined' sx={{ mt: 1 }}>Criar Conta</Button>
+      </Paper>
+    </Box>
+  );
 }
-
-export default App

@@ -1,14 +1,23 @@
-import { ReactNode } from "react"
-import { Button as MaterialButton, ButtonProps } from "@mui/material"
+import { ReactNode } from 'react';
+import { Button as MaterialButton, ButtonProps } from '@mui/material';
 
 interface CustomButtonProps extends ButtonProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
-export default function Button({ children, variant = 'contained', sx, ...restProps }: CustomButtonProps) {
+export default function Button({
+  children,
+  variant = 'contained',
+  sx,
+  ...restProps
+}: CustomButtonProps) {
   return (
-    <MaterialButton variant={variant} sx={{ ...sx, textTransform: 'none' }} {...restProps}>
+    <MaterialButton
+      variant={variant}
+      sx={{ ...sx, textTransform: 'none' }}
+      {...restProps}
+    >
       {children}
     </MaterialButton>
-  )
+  );
 }

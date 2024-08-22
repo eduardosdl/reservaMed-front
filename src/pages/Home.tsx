@@ -1,7 +1,9 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Outlet } from 'react-router-dom';
+import { Box } from '@mui/material';
+
+import DrawerNav from '../components/DrawerNav';
 
 export default function Home() {
-
   return (
     <Box
       sx={{
@@ -12,19 +14,8 @@ export default function Home() {
         alignItems: 'center',
       }}
     >
-      <Paper
-        elevation={10}
-        sx={{
-          width: 350,
-          px: 2,
-          py: 4,
-          display: 'flex',
-          flexDirection: 'column',
-          rowGap: 1,
-        }}
-      >
-        <Typography>Pagina Home</Typography>
-      </Paper>
+      <DrawerNav />
+      <Outlet />
     </Box>
   );
 }

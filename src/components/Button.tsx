@@ -1,5 +1,9 @@
 import { ReactNode } from 'react';
-import { Button as MaterialButton, ButtonProps, CircularProgress } from '@mui/material';
+import {
+  Button as MaterialButton,
+  ButtonProps,
+  CircularProgress,
+} from '@mui/material';
 
 interface CustomButtonProps extends ButtonProps {
   children: ReactNode;
@@ -18,9 +22,7 @@ export default function Button({
       variant={variant}
       sx={{ ...sx, textTransform: 'none' }}
       {...restProps}
-      endIcon={loading && (
-        <CircularProgress size={24} />
-      )}
+      endIcon={loading && <CircularProgress size={24} />}
     >
       {loading ? '' : children}
     </MaterialButton>

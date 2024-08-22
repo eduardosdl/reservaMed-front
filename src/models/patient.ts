@@ -1,14 +1,14 @@
 export default interface Patient {
   name: string;
-  dateOfBirth: string;
+  birthDate: string;
   cpf: string;
-  phone: string;
+  cellPhone: string;
   email: string;
   street?: string;
   city?: string;
   state?: string;
-  postalCode?: string;
-  country?: string;
+  cep?: string;
   allergies?: string[];
   legalGuardian?: Patient;
+  ativo: boolean;
 }

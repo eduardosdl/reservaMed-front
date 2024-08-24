@@ -1,10 +1,5 @@
-export default function formatCPF(cpf: number | string): string {
-    const cpfStr = cpf.toString();
-
-    if (cpfStr.length !== 11) {
-        throw new Error("O CPF deve conter 11 dígitos.");
-    }
-
-    return cpfStr.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+export default function formatCpf(cpf: string) {
+  return cpf
+  .replace(/\D/g, '')
+  .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 }
-  

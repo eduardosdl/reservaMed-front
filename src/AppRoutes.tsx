@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Home from './pages/Home';
-import Patients from './pages/Patients';
+import Patients from './pages/Patients/index';
 import Doctors from './pages/Doctors';
 
 export default function AppRoutes() {

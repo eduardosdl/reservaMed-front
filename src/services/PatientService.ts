@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios"
-import Patient from "../models/patient";
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import Patient from '../types/patient';
 
 class PatientService {
   private apiClient: AxiosInstance;
@@ -14,23 +14,29 @@ class PatientService {
   }
 
   public async getAllPatients(): Promise<Patient[]> {
-    try {
-      const response: AxiosResponse<Patient[]> = await this.apiClient.get('/patients');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching patients:', error);
-      throw error;
-    }
+    const response: AxiosResponse<Patient[]> =
+      await this.apiClient.get('/patients');
+    return response.data;
+  }
+
+  public async createPatient(patient: Patient): Promise<Patient> {
+    const response: AxiosResponse<Patient> = await this.apiClient.post(
+      '/patients',
+      patient,
+    );
+    return response.data;
+  }
+
+  public async updatePatient(patient: Patient): Promise<Patient> {
+    const response: AxiosResponse<Patient> = await this.apiClient.put(
+      `/patients/${patient.cpf}`,
+      patient,
+    );
+    return response.data;
   }
 
   public async deletePatient(cpf: string): Promise<void> {
-    try {
-      await this.apiClient.delete(`/patients/${cpf}`);
-      console.log(`Patient with id ${cpf} deleted successfully.`);
-    } catch (error) {
-      console.error('Error deleting patient:', error);
-      throw error;
-    }
+    await this.apiClient.delete(`/patients/${cpf}`);
   }
 }
 

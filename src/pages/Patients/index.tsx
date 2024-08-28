@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { AlertColor, Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
 import PatientService from '../../services/PatientService';
@@ -10,61 +10,71 @@ import ModalForm from './ModalForm';
 import createColumns from './DefColumns';
 
 export default function Patients() {
+  // inicializacao dos estados
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [formModalIsVisible, setFormModalIsVisible] = useState(false);
-  const [deleteSuccessIsVisible, setDeleteSuccessIsVisible] = useState(false);
-  const [errorIsVisible, setErrorIsVisible] = useState(false);
-  const [errorText, setErrorText] = useState(
+  const [modalOpen, setModalOpen] = useState(false);
+  const [patientCpfToEdit, setPatientCpfToEdit] = useState('');
+  const [toastIsVisible, setToastIsVisible] = useState(false);
+  const [toastType, setToastType] = useState<AlertColor>('error');
+  const [toastMessage, setToastMessage] = useState(
     'Houve um erro ao buscar pacientes',
   );
-  const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(
+  const [initialData, setInitialData] = useState<Patient | undefined>(
     undefined,
   );
 
   function getAllPatients() {
     PatientService.getAllPatients()
-      .then(data => setPatients(data))
+      .then(data => {
+        setPatients(data);
+      })
       .catch(error => {
         console.error('Houve um erro ao buscar pacientes:', error);
-        setErrorText('Houve um erro ao buscar pacientes');
-        setErrorIsVisible(true);
+        setToastType('error');
+        setToastMessage('Houve um erro ao buscar pacientes');
+        setToastIsVisible(true);
       });
   }
 
+  // carregamento dos dados na tabela
   useEffect(() => {
     getAllPatients();
   }, []);
 
-  function handleSubmitCreatePatient(patientData: Patient) {
+  function handleCreatePatient(patientData: Patient) {
     PatientService.createPatient(patientData)
       .then(data => {
         setPatients(prevState => [...prevState, data]);
+        setToastType('success');
+        setToastMessage('Paciente criado com sucesso');
+        setToastIsVisible(true);
+        setModalOpen(false);
       })
       .catch(error => {
-        console.log(`Houve um erro ao criar paciente: ${error}`);
-        setErrorText(
-          'Houve um erro ao criar paciente, tente novamente mais tarde',
-        );
-        setErrorIsVisible(true);
+        setToastType('error');
+        setToastMessage(error.message);
+        setToastIsVisible(true);
       });
   }
 
-  function handleSubmitUpdatePatient(patientData: Patient) {
-    PatientService.updatePatient(patientData)
+  function handleUpdatePatient(patientData: Patient) {
+    console.log(patientData);
+    PatientService.updatePatient(patientCpfToEdit, patientData)
       .then(updatedPatient => {
         setPatients(prevState =>
           prevState.map(patient =>
-            patient.cpf === updatedPatient.cpf ? updatedPatient : patient,
+            patient.id === updatedPatient.id ? updatedPatient : patient,
           ),
         );
-        setFormModalIsVisible(false);
+        setToastType('success');
+        setToastMessage('Paciente alterado com sucesso');
+        setToastIsVisible(true);
+        setModalOpen(false);
       })
       .catch(error => {
-        console.log(`Houve um erro ao atualizar paciente: ${error}`);
-        setErrorText(
-          'Houve um erro ao atualizar paciente, tente novamente mais tarde',
-        );
-        setErrorIsVisible(true);
+        setToastType('error');
+        setToastMessage(error.message);
+        setToastIsVisible(true);
       });
   }
 
@@ -77,21 +87,33 @@ export default function Patients() {
       })
       .catch(error => {
         console.log(`Houve um erro ao excluir paciente: ${error}`);
-        setErrorText(
+        setToastType('error');
+        setToastMessage(
           'Houve um erro ao excluir paciente, tente novamente mais tarde',
         );
-        setErrorIsVisible(true);
+        setToastIsVisible(true);
       });
   }
 
-  function openCreateForm() {
-    setSelectedPatient(undefined);
-    setFormModalIsVisible(true);
+  function handleOpenCreateModal() {
+    setPatientCpfToEdit('');
+    setInitialData(undefined);
+    setModalOpen(true);
   }
 
-  function openEditForm(patient: Patient) {
-    setSelectedPatient(patient);
-    setFormModalIsVisible(true);
+  function handleOpenEditModal(data: Patient) {
+    setPatientCpfToEdit(data.cpf);
+    setInitialData(data);
+    setModalOpen(true);
+  }
+
+  // valida se for criacao ou atualizacao de paciente
+  function handleSubmit(data: Patient) {
+    if (patientCpfToEdit) {
+      handleUpdatePatient(data);
+      return;
+    }
+    handleCreatePatient(data);
   }
 
   return (
@@ -106,39 +128,27 @@ export default function Patients() {
       }}
     >
       <Toast
-        isVisible={errorIsVisible}
-        onClose={() => setErrorIsVisible(false)}
-        type="error"
-        description={errorText}
-      />
-      <Toast
-        isVisible={deleteSuccessIsVisible}
-        onClose={() => setDeleteSuccessIsVisible(false)}
-        type="success"
-        description="Paciente exclído com sucesso"
+        isVisible={toastIsVisible}
+        onClose={() => setToastIsVisible(false)}
+        type={toastType}
+        description={toastMessage}
       />
       <ModalForm
-        isVisible={formModalIsVisible}
-        onClose={() => {
-          setFormModalIsVisible(false);
-          setSelectedPatient(undefined);
-        }}
-        onSubmit={
-          selectedPatient
-            ? handleSubmitUpdatePatient
-            : handleSubmitCreatePatient
-        }
-        patient={selectedPatient}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        initialData={initialData}
+        onSubmit={handleSubmit}
       />
 
-      <Button sx={{ width: 'fit-content' }} onClick={openCreateForm}>
+      <Button sx={{ width: 'fit-content' }} onClick={handleOpenCreateModal}>
         Novo Paciente
       </Button>
+      {/* renderiza a tabela de acordo com DefColumns */}
       <DataGrid
         rows={patients}
         columns={createColumns({
-          onOpenEditForm: openEditForm,
-          onOpenDeleteModal: handleDeletePatient,
+          onOpenEditModal: handleOpenEditModal,
+          onDeletePatient: handleDeletePatient,
         })}
       />
     </Box>

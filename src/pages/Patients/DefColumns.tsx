@@ -7,13 +7,13 @@ import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import Patient from '../../types/patient';
 
 interface CreateColumnsProps {
-  onOpenEditForm: (cpf: Patient) => void;
-  onOpenDeleteModal: (cpf: string) => void;
+  onOpenEditModal: (patientData: Patient) => void;
+  onDeletePatient: (cpf: string) => void;
 }
 
 export default function createColumns({
-  onOpenEditForm,
-  onOpenDeleteModal,
+  onOpenEditModal,
+  onDeletePatient,
 }: CreateColumnsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -60,12 +60,12 @@ export default function createColumns({
     {
       field: 'state',
       headerName: 'Estado',
-      width: 100,
+      width: 80,
     },
     {
       field: 'cep',
       headerName: 'CEP',
-      width: 120,
+      width: 100,
       type: 'string',
       valueFormatter: value => formatCep(value || ''),
     },
@@ -75,18 +75,24 @@ export default function createColumns({
       width: 150,
       renderCell: params => (
         <>
-          {params.value
-            .split(',')
-            ?.map((allergy: string, index: number) => (
-              <Chip key={index} label={allergy} sx={{ mr: 1 }} />
-            ))}
+          {params.value &&
+            params.value
+              .split(',')
+              ?.map((allergy: string, index: number) => (
+                <Chip key={index} label={allergy} sx={{ mr: 1 }} />
+              ))}
         </>
       ),
     },
     {
-      field: 'responsibleCpf',
+      field: 'medicalHistory',
+      headerName: 'Historico medico',
+      width: 150,
+    },
+    {
+      field: 'guardianCpf',
       headerName: 'Responsável Legal',
-      width: 250,
+      width: 150,
       valueFormatter: value => formatCpf(value || '') || 'Maior de idade',
     },
     {
@@ -99,13 +105,13 @@ export default function createColumns({
           <ButtonGroup variant="outlined">
             <IconButton
               aria-label="edit"
-              onClick={() => onOpenEditForm(params.row)}
+              onClick={() => onOpenEditModal(params.row)}
             >
               <EditIcon color="success" />
             </IconButton>
             <IconButton
               aria-label="delete"
-              onClick={() => onOpenDeleteModal(cpf)}
+              onClick={() => onDeletePatient(cpf)}
             >
               <DeleteIcon color="error" />
             </IconButton>

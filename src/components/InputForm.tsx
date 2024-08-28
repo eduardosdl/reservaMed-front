@@ -48,7 +48,9 @@ function FormInput<T extends FieldValues>({
               if (onBlur) onBlur();
             }}
             inputProps={{ maxLength }}
-            InputLabelProps={type === 'date' ? { shrink: true } : undefined}
+            InputLabelProps={
+              type.includes('date') ? { shrink: true } : undefined
+            }
           />
         )}
       />

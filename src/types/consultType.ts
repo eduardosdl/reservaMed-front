@@ -1,14 +1,14 @@
 enum ConsultType {
-  'Consulta de Rotina/Check-up',
-  'Consulta de Urgência/Emergência',
-  'Consulta de Seguimento',
-  'Consulta Especializada',
-  'Consulta Pré-Natal',
-  'Consulta Pediátrica',
-  'Consulta Psiquiátrica/Psicológica',
-  'Consulta Odontológica',
-  'Consulta Geriátrica',
-  'Consulta de Telemedicina',
+  ROUTINE_CHECKUP = 'ROUTINE_CHECKUP',
+  URGENT_CARE = 'URGENT_CARE',
+  FOLLOW_UP = 'FOLLOW_UP',
+  SPECIALIZED = 'SPECIALIZED',
+  PRENATAL = 'PRENATAL',
+  PEDIATRIC = 'PEDIATRIC',
+  PSYCHIATRIC = 'PSYCHIATRIC',
+  DENTAL = 'DENTAL',
+  GERIATRIC = 'GERIATRIC',
+  TELEMEDICINE = 'TELEMEDICINE',
 }
 
 export default ConsultType;

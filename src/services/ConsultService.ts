@@ -20,6 +20,23 @@ class ConsultService {
     return response.data;
   }
 
+  public async getConsultsByCpf(cpf: string): Promise<Consult[]> {
+    try {
+      const response: AxiosResponse<Consult[]> = await this.apiClient.get(
+        `/consults/${cpf}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao criar consultas: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new Error(error.response?.data.message);
+      }
+      throw new Error(
+        'Houve um erro ao buscar consultas, tente novamente mais tarde',
+      );
+    }
+  }
+
   public async createConsult(consult: CreateConsult): Promise<Consult> {
     try {
       const response: AxiosResponse<Consult> = await this.apiClient.post(
@@ -56,9 +73,8 @@ class ConsultService {
   //   }
   // }
 
-  // public async deleteDoctor(crm: string): Promise<void> {
-  //   await this.apiClient.delete(`/doctors/${crm}`);
-  // }
+  public async cancelConsult(id: number, reason: string): Promise<void> {
+    await this.apiClient.delete<number>('/consults', { data: { id, reason } });
+  }
 }
-
 export default new ConsultService();

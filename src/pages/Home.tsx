@@ -31,7 +31,7 @@ export default function Home() {
         <Button sx={{ width: 1 }} onClick={() => navigate('/appointment')}>
           Agendar consulta
         </Button>
-        <Button sx={{ width: 1 }} onClick={() => navigate('')}>
+        <Button sx={{ width: 1 }} onClick={() => navigate('/consults')}>
           Consultar histórico de consultas
         </Button>
       </Card>

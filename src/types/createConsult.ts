@@ -1,8 +1,8 @@
 import ConsultType from './consultType';
 
 export default interface CreateConsult {
-  doctor_id: string;
-  patient_id: string;
-  date: Date;
+  id_doctor: number;
+  cpf_patient: string;
+  date: string;
   type: ConsultType;
 }

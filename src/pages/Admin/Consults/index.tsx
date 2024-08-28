@@ -11,6 +11,7 @@ import DoctorService from '../../../services/DoctorService';
 import Consult from '../../../types/consult';
 import ConsultService from '../../../services/ConsultService';
 import CreateConsult from '../../../types/createConsult';
+import TableConsult from '../../../components/TableConsult';
 
 export default function Consults() {
   // inicializacao dos estados
@@ -145,14 +146,15 @@ export default function Consults() {
         Novo Paciente
       </Button>
       {/* renderiza a tabela de acordo com DefColumns */}
-      <DataGrid
+      {/* <DataGrid
         rows={consults}
         // columns={createColumns({
         //   onOpenEditModal: handleOpenEditModal,
         //   onDeleteDoctor: handleDeleteDoctor,
         // })}
         columns={createColumns()}
-      />
+      /> */}
+      <TableConsult consultsData={consults} />
     </Box>
   );
 }

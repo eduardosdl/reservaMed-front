@@ -6,6 +6,7 @@ import Patients from './pages/Admin/Patients';
 import Doctors from './pages/Admin/Doctors';
 import Consults from './pages/Admin/Consults';
 import CreateConsult from './pages/CreateConsult';
+import ShowConsults from './pages/ShowConsults';
 
 export default function AppRoutes() {
   return (
@@ -18,6 +19,7 @@ export default function AppRoutes() {
         <Route path="consults" element={<Consults />} />
       </Route>
       <Route path="/appointment" element={<CreateConsult />} />
+      <Route path="/consults" element={<ShowConsults />} />
     </Routes>
   );
 }

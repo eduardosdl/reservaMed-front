@@ -1,21 +1,20 @@
 import { Modal, Box } from '@mui/material';
 import FormDoctor from './FormDoctor';
-import Doctor from '../../../types/doctor';
+import Doctor from '../../types/doctor';
+import CreateConsult from '../../../types/createConsult';
 
-interface DoctorModalProps {
+interface ConsultModalProps {
   open: boolean;
   onClose: () => void;
-  initialData?: Doctor;
-  onSubmit: (data: Doctor) => void;
+  onSubmit: (data: CreateConsult) => void;
 }
 
 // componente para gerenciar o modal
 export default function DoctorModal({
   open,
   onClose,
-  initialData,
   onSubmit,
-}: DoctorModalProps) {
+}: ConsultModalProps) {
   return (
     <Modal open={open} onClose={onClose}>
       <Box
@@ -32,7 +31,7 @@ export default function DoctorModal({
           overflow: 'auto',
         }}
       >
-        <FormDoctor initialData={initialData} onSubmit={onSubmit} />
+        <FormDoctor onSubmit={onSubmit} />
       </Box>
     </Modal>
   );

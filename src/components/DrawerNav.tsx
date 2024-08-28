@@ -32,6 +32,11 @@ export default function DrawerNav() {
             icon={<LocalHospital />}
             path="/admin/doctors"
           />
+          <NavItem
+            name="Consultas"
+            icon={<LocalHospital />}
+            path="/admin/consults"
+          />
         </List>
       </Box>
     </Drawer>

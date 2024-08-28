@@ -1,9 +1,11 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Home from './pages/Home';
+import Admin from './pages/Admin';
 import Patients from './pages/Admin/Patients';
 import Doctors from './pages/Admin/Doctors';
-import Admin from './pages/Admin';
+import Consults from './pages/Admin/Consults';
+import CreateConsult from './pages/CreateConsult';
 
 export default function AppRoutes() {
   return (
@@ -13,7 +15,9 @@ export default function AppRoutes() {
         <Route path="" element={<Navigate to="patients" replace />} />
         <Route path="patients" element={<Patients />} />
         <Route path="doctors" element={<Doctors />} />
+        <Route path="consults" element={<Consults />} />
       </Route>
+      <Route path="/appointment" element={<CreateConsult />} />
     </Routes>
   );
 }

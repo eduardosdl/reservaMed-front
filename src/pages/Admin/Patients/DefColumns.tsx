@@ -1,10 +1,10 @@
 import { GridColDef } from '@mui/x-data-grid';
-import formatCpf from '../../utils/formatCpf';
-import formatPhone from '../../utils/formatPhone';
-import formatCep from '../../utils/formatCep';
+import formatCpf from '../../../utils/formatCpf';
+import formatPhone from '../../../utils/formatPhone';
+import formatCep from '../../../utils/formatCep';
 import { ButtonGroup, Chip, IconButton } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
-import Patient from '../../types/patient';
+import Patient from '../../../types/patient';
 
 interface CreateColumnsProps {
   onOpenEditModal: (patientData: Patient) => void;

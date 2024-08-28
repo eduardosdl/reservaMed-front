@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
 
-import DrawerNav from '../components/DrawerNav';
+import DrawerNav from '../../components/DrawerNav';
 
 export default function Admin() {
   return (

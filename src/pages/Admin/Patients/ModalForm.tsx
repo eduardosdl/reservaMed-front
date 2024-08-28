@@ -1,6 +1,6 @@
 import { Modal, Box } from '@mui/material';
 import FormPatient from './FormPatient';
-import Patient from '../../types/patient';
+import Patient from '../../../types/patient';
 
 interface PatientModalProps {
   open: boolean;

@@ -3,14 +3,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Grid } from '@mui/material';
 
-import formatCpf from '../../utils/formatCpf';
-import formatPhone from '../../utils/formatPhone';
-import formatCep from '../../utils/formatCep';
-import isMinor from '../../utils/isMinor';
-import Patient from '../../types/patient';
-import CepService from '../../services/CepService';
-import FormInput from '../../components/InputForm';
-import Button from '../../components/Button';
+import formatCpf from '../../../utils/formatCpf';
+import formatPhone from '../../../utils/formatPhone';
+import formatCep from '../../../utils/formatCep';
+import isMinor from '../../../utils/isMinor';
+import Patient from '../../../types/patient';
+import CepService from '../../../services/CepService';
+import FormInput from '../../../components/InputForm';
+import Button from '../../../components/Button';
 
 // monta as validacoes com zod
 const patientSchema = z.object({

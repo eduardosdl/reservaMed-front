@@ -2,49 +2,47 @@ import { useEffect, useState } from 'react';
 import { AlertColor, Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-import PatientService from '../../services/PatientService';
-import Patient from '../../types/patient';
-import Button from '../../components/Button';
-import Toast from '../../components/Toast';
+import Button from '../../../components/Button';
+import Toast from '../../../components/Toast';
 import ModalForm from './ModalForm';
 import createColumns from './DefColumns';
+import Doctor from '../../../types/doctor';
+import DoctorService from '../../../services/DoctorService';
 
-export default function Patients() {
+export default function Doctors() {
   // inicializacao dos estados
-  const [patients, setPatients] = useState<Patient[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [patientCpfToEdit, setPatientCpfToEdit] = useState('');
+  const [doctorCrmToEdit, setDoctorCrmToEdit] = useState('');
   const [toastIsVisible, setToastIsVisible] = useState(false);
   const [toastType, setToastType] = useState<AlertColor>('error');
   const [toastMessage, setToastMessage] = useState(
-    'Houve um erro ao buscar pacientes',
+    'Houve um erro ao buscar médicos',
   );
-  const [initialData, setInitialData] = useState<Patient | undefined>(
-    undefined,
-  );
+  const [initialData, setInitialData] = useState<Doctor | undefined>(undefined);
 
-  function getAllPatients() {
-    PatientService.getAllPatients()
+  function getAllDoctors() {
+    DoctorService.getAllDoctors()
       .then(data => {
-        setPatients(data);
+        setDoctors(data);
       })
       .catch(error => {
-        console.error('Houve um erro ao buscar pacientes:', error);
+        console.error('Houve um erro ao buscar médicos:', error);
         setToastType('error');
-        setToastMessage('Houve um erro ao buscar pacientes');
+        setToastMessage('Houve um erro ao buscar médicos');
         setToastIsVisible(true);
       });
   }
 
   // carregamento dos dados na tabela
   useEffect(() => {
-    getAllPatients();
+    getAllDoctors();
   }, []);
 
-  function handleCreatePatient(patientData: Patient) {
-    PatientService.createPatient(patientData)
+  function handleCreateDoctor(doctorData: Doctor) {
+    DoctorService.createDoctor(doctorData)
       .then(data => {
-        setPatients(prevState => [...prevState, data]);
+        setDoctors(prevState => [...prevState, data]);
         setToastType('success');
         setToastMessage('Paciente criado com sucesso');
         setToastIsVisible(true);
@@ -57,13 +55,13 @@ export default function Patients() {
       });
   }
 
-  function handleUpdatePatient(patientData: Patient) {
-    console.log(patientData);
-    PatientService.updatePatient(patientCpfToEdit, patientData)
-      .then(updatedPatient => {
-        setPatients(prevState =>
-          prevState.map(patient =>
-            patient.id === updatedPatient.id ? updatedPatient : patient,
+  function handleUpdateDoctor(doctorData: Doctor) {
+    console.log(doctorData);
+    DoctorService.updateDoctor(doctorCrmToEdit, doctorData)
+      .then(updatedDoctor => {
+        setDoctors(prevState =>
+          prevState.map(doctor =>
+            doctor.id === updatedDoctor.id ? updatedDoctor : doctor,
           ),
         );
         setToastType('success');
@@ -78,11 +76,11 @@ export default function Patients() {
       });
   }
 
-  function handleDeletePatient(cpfToDelete: string) {
-    PatientService.deletePatient(cpfToDelete)
+  function handleDeleteDoctor(crmToDelete: string) {
+    DoctorService.deleteDoctor(crmToDelete)
       .then(() => {
-        setPatients(prevState =>
-          prevState.filter(patient => patient.cpf !== cpfToDelete),
+        setDoctors(prevState =>
+          prevState.filter(doctor => doctor.crm !== crmToDelete),
         );
       })
       .catch(error => {
@@ -96,24 +94,24 @@ export default function Patients() {
   }
 
   function handleOpenCreateModal() {
-    setPatientCpfToEdit('');
+    setDoctorCrmToEdit('');
     setInitialData(undefined);
     setModalOpen(true);
   }
 
-  function handleOpenEditModal(data: Patient) {
-    setPatientCpfToEdit(data.cpf);
+  function handleOpenEditModal(data: Doctor) {
+    setDoctorCrmToEdit(data.crm);
     setInitialData(data);
     setModalOpen(true);
   }
 
   // valida se for criacao ou atualizacao de paciente
-  function handleSubmit(data: Patient) {
-    if (patientCpfToEdit) {
-      handleUpdatePatient(data);
+  function handleSubmit(data: Doctor) {
+    if (doctorCrmToEdit) {
+      handleUpdateDoctor(data);
       return;
     }
-    handleCreatePatient(data);
+    handleCreateDoctor(data);
   }
 
   return (
@@ -145,10 +143,10 @@ export default function Patients() {
       </Button>
       {/* renderiza a tabela de acordo com DefColumns */}
       <DataGrid
-        rows={patients}
+        rows={doctors}
         columns={createColumns({
           onOpenEditModal: handleOpenEditModal,
-          onDeletePatient: handleDeletePatient,
+          onDeleteDoctor: handleDeleteDoctor,
         })}
       />
     </Box>

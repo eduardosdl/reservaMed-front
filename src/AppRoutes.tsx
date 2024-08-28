@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Home from './pages/Home';
-import Patients from './pages/Patients';
-import Doctors from './pages/Doctors';
+import Patients from './pages/Admin/Patients';
+import Doctors from './pages/Admin/Doctors';
 import Admin from './pages/Admin';
 
 export default function AppRoutes() {

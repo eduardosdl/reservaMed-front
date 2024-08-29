@@ -93,7 +93,7 @@ export default function createColumns({
       field: 'guardianCpf',
       headerName: 'Responsável Legal',
       width: 150,
-      valueFormatter: value => formatCpf(value || '') || 'Maior de idade',
+      valueFormatter: value => formatCpf(value || ''),
     },
     {
       field: 'id',

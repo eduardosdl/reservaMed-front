@@ -27,6 +27,7 @@ const createConsultSchema = z.object({
   type: z.nativeEnum(ConsultType, {
     errorMap: () => ({ message: 'Selecione o tipo de consulta' }),
   }),
+  speciality: z.string().min(1, 'Especialidade não pode ser nula'),
 });
 
 type CreateConsultFormValues = z.infer<typeof createConsultSchema>;
@@ -78,7 +79,7 @@ export default function CreateConsult() {
         setToastType('success');
         setToastMessage('Consulta marcada com sucesso');
         setToastIsVisible(true);
-        navigate('/');
+        navigate(-1);
       })
       .catch(error => {
         setToastType('error');
@@ -126,7 +127,7 @@ export default function CreateConsult() {
               >
                 {doctors.map(doctor => (
                   <MenuItem key={doctor.id} value={doctor.id}>
-                    {`${doctor.name} - ${doctor.specialty}`}
+                    {`${doctor.name}`}
                   </MenuItem>
                 ))}
               </TextField>
@@ -175,6 +176,15 @@ export default function CreateConsult() {
                 ))}
               </TextField>
             )}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormInput
+            name="speciality"
+            control={control}
+            label="Especialidade do médico"
+            error={!!errors.speciality}
+            errorMessage={errors.speciality?.message}
           />
         </Grid>
         <Grid item xs={12}>

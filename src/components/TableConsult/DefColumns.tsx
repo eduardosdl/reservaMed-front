@@ -1,23 +1,14 @@
 import { GridColDef } from '@mui/x-data-grid';
 import formatCpf from '../../utils/formatCpf';
-import { ButtonGroup } from '@mui/material';
+import { Box } from '@mui/material';
 import Button from '../Button';
 
-// interface CreateColumnsProps {
-//   onOpenEditModal: (consultData: Consult) => void;
-//   onCancelConsult: (id: string) => void;
-// }
-
-// export default function createColumns({
-//   onOpenEditModal,
-//   onCancelConsult,
-// }: CreateColumnsProps): GridColDef[] {
 interface createConsultColumsProps {
-  onCancelConsult: (id: number) => void;
+  onCompleteConsult: (id: number) => void;
 }
 
 export default function createConsultColumns({
-  onCancelConsult,
+  onCompleteConsult,
 }: createConsultColumsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -55,40 +46,20 @@ export default function createConsultColumns({
     {
       field: 'id',
       headerName: 'Ações',
-      width: 150,
+      width: 350,
       renderCell: params => {
-        const { id } = params.row;
+        const { id, status } = params.row;
         return (
-          <ButtonGroup variant="outlined">
-            <Button onClick={() => onCancelConsult(id)}> Cancelar</Button>
-          </ButtonGroup>
+          <Box>
+            {status != 'P' && (
+              <Button onClick={() => onCompleteConsult(id)} color="success">
+                Completar
+              </Button>
+            )}
+          </Box>
         );
       },
     },
-    // {
-    //   field: 'id',
-    //   headerName: 'Ações',
-    //   width: 150,
-    //   renderCell: params => {
-    //     const { crm } = params.row;
-    //     return (
-    //       <ButtonGroup variant="outlined">
-    //         <IconButton
-    //           aria-label="edit"
-    //           onClick={() => onOpenEditModal(params.row)}
-    //         >
-    //           <EditIcon color="success" />
-    //         </IconButton>
-    //         <IconButton
-    //           aria-label="delete"
-    //           onClick={() => onCancelConsult(crm)}
-    //         >
-    //           <DeleteIcon color="error" />
-    //         </IconButton>
-    //       </ButtonGroup>
-    //     );
-    //   },
-    // },
   ];
 
   return columns;

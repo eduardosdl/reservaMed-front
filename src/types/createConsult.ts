@@ -5,4 +5,5 @@ export default interface CreateConsult {
   cpf_patient: string;
   date: string;
   type: ConsultType;
+  speciality: string;
 }

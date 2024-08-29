@@ -1,5 +1,5 @@
 import { Box, Drawer, List } from '@mui/material';
-import { LocalHospital, Person } from '@mui/icons-material';
+import { LocalHospital, Person, Event } from '@mui/icons-material';
 
 import NavItem from './NavItem';
 
@@ -32,11 +32,7 @@ export default function DrawerNav() {
             icon={<LocalHospital />}
             path="/admin/doctors"
           />
-          <NavItem
-            name="Consultas"
-            icon={<LocalHospital />}
-            path="/admin/consults"
-          />
+          <NavItem name="Consultas" icon={<Event />} path="/admin/consults" />
         </List>
       </Box>
     </Drawer>

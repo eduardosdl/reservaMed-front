@@ -9,17 +9,20 @@ import Toast from '../Toast';
 
 interface TableConsultProps {
   consultsData: Consult[];
-  realoadData: () => void;
+  realoadData?: () => void;
 }
 
 export default function TableConsult({
   consultsData,
-  realoadData,
+  realoadData = () => {},
 }: TableConsultProps) {
-  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [diagnostic, setDiagnostic] = useState('');
+  const [prescription, setPrescription] = useState('');
   const [reasonCancel, setReasonCancel] = useState('');
   const [consultId, setConsultId] = useState(0);
   const [toastIsVisible, setToastIsVisible] = useState(false);
+  const [actionType, setActionType] = useState('');
   const [toastType, setToastType] = useState<AlertColor>('error');
   const [toastMessage, setToastMessage] = useState(
     'Houve um erro ao buscar médicos',
@@ -29,7 +32,25 @@ export default function TableConsult({
     ConsultService.cancelConsult(consultId, reasonCancel)
       .then(() => {
         setToastType('success');
-        setToastMessage('Consulta cancelada!');
+        setToastMessage('Consulta cancelada com sucesso!');
+        setToastIsVisible(true);
+        realoadData();
+      })
+      .catch(error => {
+        setToastType('error');
+        setToastMessage(error.message);
+        setToastIsVisible(true);
+      });
+  }
+
+  function handleCompleteConsult() {
+    ConsultService.completeConsult(consultId, {
+      diagnostic,
+      prescription,
+    })
+      .then(() => {
+        setToastType('success');
+        setToastMessage('Consulta completa!');
         setToastIsVisible(true);
         realoadData();
       })
@@ -48,10 +69,7 @@ export default function TableConsult({
         type={toastType}
         description={toastMessage}
       />
-      <Modal
-        open={isCancelModalVisible}
-        onClose={() => setIsCancelModalVisible(false)}
-      >
+      <Modal open={isModalVisible} onClose={() => setIsModalVisible(false)}>
         <Box
           sx={{
             position: 'absolute',
@@ -69,18 +87,63 @@ export default function TableConsult({
             alignItems: 'center',
           }}
         >
-          <TextField
-            label="Motivo do cancelamento"
-            value={reasonCancel}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setReasonCancel(event.target.value);
-            }}
-            fullWidth
-            sx={{ mb: 4 }}
-          />
-          <Button fullWidth onClick={handleCancelConsult}>
-            Cancelar
-          </Button>
+          {actionType == 'cancel' && (
+            <>
+              <TextField
+                label="Motivo do cancelamento"
+                value={reasonCancel}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setReasonCancel(event.target.value);
+                }}
+                fullWidth
+                sx={{ mb: 4 }}
+              />
+              <Button fullWidth onClick={handleCancelConsult}>
+                Cancelar
+              </Button>
+            </>
+          )}
+          {actionType == 'complete' && (
+            <>
+              <TextField
+                label="Diagnostico"
+                value={diagnostic}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setDiagnostic(event.target.value);
+                }}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                label="Prescrição"
+                value={prescription}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setPrescription(event.target.value);
+                }}
+                fullWidth
+                sx={{ mb: 4 }}
+              />
+              <Button fullWidth onClick={handleCompleteConsult}>
+                Completar
+              </Button>
+            </>
+          )}
+          {actionType == 'edit' && (
+            <>
+              <TextField
+                label="Diagnostico"
+                value={diagnostic}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setDiagnostic(event.target.value);
+                }}
+                fullWidth
+                sx={{ mb: 2 }}
+              />
+              <Button fullWidth onClick={handleCompleteConsult}>
+                Completar
+              </Button>
+            </>
+          )}
         </Box>
       </Modal>
       <DataGrid
@@ -90,8 +153,9 @@ export default function TableConsult({
         //   onDeleteDoctor: handleDeleteDoctor,
         // })}
         columns={createConsultColumns({
-          onCancelConsult: (id: number) => {
-            setIsCancelModalVisible(true);
+          onCompleteConsult: id => {
+            setIsModalVisible(true);
+            setActionType('complete');
             setConsultId(id);
           },
         })}

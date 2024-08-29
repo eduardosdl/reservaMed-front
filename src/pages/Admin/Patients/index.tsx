@@ -84,6 +84,9 @@ export default function Patients() {
         setPatients(prevState =>
           prevState.filter(patient => patient.cpf !== cpfToDelete),
         );
+        setToastType('success');
+        setToastMessage('Paciente exclído com sucesso');
+        setToastIsVisible(true);
       })
       .catch(error => {
         console.log(`Houve um erro ao excluir paciente: ${error}`);

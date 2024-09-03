@@ -1,17 +1,17 @@
 import { GridColDef } from '@mui/x-data-grid';
+
 import formatPhone from '../../../utils/formatPhone';
-import { ButtonGroup, IconButton } from '@mui/material';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import Doctor from '../../../types/doctor';
+import ActionTableButton from '../../../components/ActionTableButtons';
 
 interface CreateColumnsProps {
-  onOpenEditModal: (doctorData: Doctor) => void;
-  onDeleteDoctor: (crm: string) => void;
+  handleOpenEditModal: (doctorData: Doctor) => void;
+  handleDeleteDoctor: (crm: string) => void;
 }
 
 export default function createColumns({
-  onOpenEditModal,
-  onDeleteDoctor,
+  handleOpenEditModal,
+  handleDeleteDoctor,
 }: CreateColumnsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -41,19 +41,12 @@ export default function createColumns({
       headerName: 'Ações',
       width: 150,
       renderCell: params => {
-        const { crm } = params.row;
+        const doctor = params.row;
         return (
-          <ButtonGroup variant="outlined">
-            <IconButton
-              aria-label="edit"
-              onClick={() => onOpenEditModal(params.row)}
-            >
-              <EditIcon color="success" />
-            </IconButton>
-            <IconButton aria-label="delete" onClick={() => onDeleteDoctor(crm)}>
-              <DeleteIcon color="error" />
-            </IconButton>
-          </ButtonGroup>
+          <ActionTableButton
+            onOpenEditModal={() => handleOpenEditModal(doctor)}
+            onDelete={() => handleDeleteDoctor(doctor.crm)}
+          />
         );
       },
     },

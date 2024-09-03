@@ -77,14 +77,14 @@ class ConsultService {
     }
   }
 
-  public async editDatetimeConsult(
+  public async updateConsult(
     consultId: number,
-    clinicalRecord: ClinicalRecord,
+    consultData: CreateConsult,
   ): Promise<Consult> {
     try {
       const response: AxiosResponse<Consult> = await this.apiClient.put(
-        `/consults/complete/${consultId}`,
-        clinicalRecord,
+        '/consults/reschedule/update',
+        { id: consultId, ...consultData },
       );
       return response.data;
     } catch (error) {

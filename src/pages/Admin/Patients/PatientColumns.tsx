@@ -1,19 +1,20 @@
 import { GridColDef } from '@mui/x-data-grid';
+import { Chip } from '@mui/material';
+
 import formatCpf from '../../../utils/formatCpf';
 import formatPhone from '../../../utils/formatPhone';
 import formatCep from '../../../utils/formatCep';
-import { ButtonGroup, Chip, IconButton } from '@mui/material';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import Patient from '../../../types/patient';
+import ActionTableButton from '../../../components/ActionTableButtons';
 
 interface CreateColumnsProps {
-  onOpenEditModal: (patientData: Patient) => void;
-  onDeletePatient: (cpf: string) => void;
+  handleOpenEditModal: (patientData: Patient) => void;
+  handleDeletePatient: (cpf: string) => void;
 }
 
-export default function createColumns({
-  onOpenEditModal,
-  onDeletePatient,
+export default function PatientColumns({
+  handleOpenEditModal,
+  handleDeletePatient,
 }: CreateColumnsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -100,22 +101,12 @@ export default function createColumns({
       headerName: 'Ações',
       width: 150,
       renderCell: params => {
-        const { cpf } = params.row;
+        const patient = params.row;
         return (
-          <ButtonGroup variant="outlined">
-            <IconButton
-              aria-label="edit"
-              onClick={() => onOpenEditModal(params.row)}
-            >
-              <EditIcon color="success" />
-            </IconButton>
-            <IconButton
-              aria-label="delete"
-              onClick={() => onDeletePatient(cpf)}
-            >
-              <DeleteIcon color="error" />
-            </IconButton>
-          </ButtonGroup>
+          <ActionTableButton
+            onOpenEditModal={() => handleOpenEditModal(patient)}
+            onDelete={() => handleDeletePatient(patient.cpf)}
+          />
         );
       },
     },

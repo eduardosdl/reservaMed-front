@@ -1,56 +1,57 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Container, MenuItem, TextField, Grid } from '@mui/material';
+import { toast } from 'react-toastify';
 import * as z from 'zod';
-import {
-  Container,
-  MenuItem,
-  TextField,
-  AlertColor,
-  Grid,
-} from '@mui/material';
-import { useEffect, useState } from 'react';
-import DoctorService from '../services/DoctorService';
-import Toast from '../components/Toast';
-import Doctor from '../types/doctor';
-import FormInput from '../components/InputForm';
-import formatCpf from '../utils/formatCpf';
-import consultTypes from '../data/consultTypes';
-import Button from '../components/Button';
-import ConsultService from '../services/ConsultService';
-import { useNavigate } from 'react-router-dom';
-import ConsultType from '../types/consultType';
 
-const createConsultSchema = z.object({
+import Toast from '../components/Toast';
+import FormInput from '../components/InputForm';
+import Button from '../components/Button';
+import DoctorService from '../services/DoctorService';
+import ConsultService from '../services/ConsultService';
+import Doctor from '../types/doctor';
+import ConsultType from '../types/consultType';
+import Consult from '../types/consult';
+import CreateConsult from '../types/createConsult';
+import consultTypes from '../data/consultTypes';
+import formatCpf from '../utils/formatCpf';
+import getConsultTypeValue from '../utils/getConsultTypeValue';
+
+const consultSchema = z.object({
   id_doctor: z.number().min(1, 'Selecione um médico'),
   cpf_patient: z.string().min(1, 'Informe um CPF'),
   date: z.string().min(1, 'Data do agendamento é obrigatória'),
   type: z.nativeEnum(ConsultType, {
     errorMap: () => ({ message: 'Selecione o tipo de consulta' }),
   }),
-  speciality: z.string().min(1, 'Especialidade não pode ser nula'),
 });
 
-type CreateConsultFormValues = z.infer<typeof createConsultSchema>;
+type ConsultFormValues = z.infer<typeof consultSchema>;
 
-export default function CreateConsult() {
+export default function ConsultForm() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [toastIsVisible, setToastIsVisible] = useState(false);
-  const [toastType, setToastType] = useState<AlertColor>('error');
-  const [toastMessage, setToastMessage] = useState('');
+
+  // Tipagem correta para os dados da consulta
+  const consultData = location.state as Consult | undefined;
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<CreateConsultFormValues>({
-    resolver: zodResolver(createConsultSchema),
+  } = useForm<ConsultFormValues>({
+    resolver: zodResolver(consultSchema),
     defaultValues: {
-      id_doctor: 0,
-      cpf_patient: '',
-      date: '',
-      type: ConsultType.ROUTINE_CHECKUP,
+      id_doctor: consultData?.doctor.id ?? 0,
+      cpf_patient: consultData?.patient.cpf ?? '',
+      date: consultData?.date ?? '',
+      type:
+        getConsultTypeValue(consultData?.type_consult || '') ??
+        ConsultType.ROUTINE_CHECKUP,
     },
   });
 
@@ -58,34 +59,41 @@ export default function CreateConsult() {
     DoctorService.getAllDoctors()
       .then(data => {
         setDoctors(data);
-        if (data.length > 0) {
+        if (!consultData && data.length > 0) {
           setValue('id_doctor', data[0].id || 0);
         }
       })
       .catch(error => {
-        setToastType('error');
-        setToastMessage(error.message);
-        setToastIsVisible(true);
+        toast.error(error.message);
       });
-  }, [setValue]);
+  }, [consultData, setValue]);
 
-  const onSubmit = (data: CreateConsultFormValues) => {
+  function handleCreateConsult(consultFormData: CreateConsult) {
+    ConsultService.createConsult(consultFormData)
+      .then(() => navigate(-1))
+      .catch(error => toast.error(error.message));
+  }
+
+  function handleUpdateConsult(
+    consultId: number,
+    consultFormData: CreateConsult,
+  ) {
+    ConsultService.updateConsult(consultId, consultFormData)
+      .then(() => navigate(-1))
+      .catch(error => toast.error(error.message));
+  }
+
+  const onSubmit = async (data: ConsultFormValues) => {
     const formatData = {
       ...data,
       cpf_patient: data.cpf_patient.replace(/\D/g, ''),
     };
-    ConsultService.createConsult(formatData)
-      .then(() => {
-        setToastType('success');
-        setToastMessage('Consulta marcada com sucesso');
-        setToastIsVisible(true);
-        navigate(-1);
-      })
-      .catch(error => {
-        setToastType('error');
-        setToastMessage(error.message);
-        setToastIsVisible(true);
-      });
+
+    if (consultData) {
+      handleUpdateConsult(consultData.id, formatData);
+    }
+
+    handleCreateConsult(formatData);
   };
 
   return (
@@ -98,12 +106,7 @@ export default function CreateConsult() {
         justifyContent: 'center',
       }}
     >
-      <Toast
-        isVisible={toastIsVisible}
-        onClose={() => setToastIsVisible(false)}
-        type={toastType}
-        description={toastMessage}
-      />
+      <Toast />
       <Grid
         container
         component={'form'}
@@ -127,7 +130,7 @@ export default function CreateConsult() {
               >
                 {doctors.map(doctor => (
                   <MenuItem key={doctor.id} value={doctor.id}>
-                    {`${doctor.name}`}
+                    {`${doctor.name} - ${doctor.specialty}`}
                   </MenuItem>
                 ))}
               </TextField>
@@ -179,22 +182,13 @@ export default function CreateConsult() {
           />
         </Grid>
         <Grid item xs={12}>
-          <FormInput
-            name="speciality"
-            control={control}
-            label="Especialidade do médico"
-            error={!!errors.speciality}
-            errorMessage={errors.speciality?.message}
-          />
-        </Grid>
-        <Grid item xs={12}>
           <Button
             sx={{ width: 1, mt: 2 }}
             type="submit"
             variant="contained"
             color="primary"
           >
-            Agendar Consulta
+            {consultData ? 'Atualizar Consulta' : 'Agendar Consulta'}
           </Button>
         </Grid>
       </Grid>

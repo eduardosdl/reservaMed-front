@@ -1,11 +1,13 @@
 import { DataGrid } from '@mui/x-data-grid';
 import Consult from '../../types/consult';
 import createConsultColumns from './DefColumns';
-import { AlertColor, Box, Modal, TextField } from '@mui/material';
+import { Box, Modal, TextField } from '@mui/material';
 import { useState } from 'react';
 import Button from '../Button';
 import ConsultService from '../../services/ConsultService';
 import Toast from '../Toast';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 interface TableConsultProps {
   consultsData: Consult[];
@@ -16,30 +18,22 @@ export default function TableConsult({
   consultsData,
   realoadData = () => {},
 }: TableConsultProps) {
+  const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [diagnostic, setDiagnostic] = useState('');
   const [prescription, setPrescription] = useState('');
   const [reasonCancel, setReasonCancel] = useState('');
   const [consultId, setConsultId] = useState(0);
-  const [toastIsVisible, setToastIsVisible] = useState(false);
   const [actionType, setActionType] = useState('');
-  const [toastType, setToastType] = useState<AlertColor>('error');
-  const [toastMessage, setToastMessage] = useState(
-    'Houve um erro ao buscar médicos',
-  );
 
   function handleCancelConsult() {
     ConsultService.cancelConsult(consultId, reasonCancel)
       .then(() => {
-        setToastType('success');
-        setToastMessage('Consulta cancelada com sucesso!');
-        setToastIsVisible(true);
+        toast.success('Consulta cancelada com sucesso!');
         realoadData();
       })
       .catch(error => {
-        setToastType('error');
-        setToastMessage(error.message);
-        setToastIsVisible(true);
+        toast.error(error.message);
       });
   }
 
@@ -49,26 +43,17 @@ export default function TableConsult({
       prescription,
     })
       .then(() => {
-        setToastType('success');
-        setToastMessage('Consulta completa!');
-        setToastIsVisible(true);
+        toast.success('Consulta completa!');
         realoadData();
       })
       .catch(error => {
-        setToastType('error');
-        setToastMessage(error.message);
-        setToastIsVisible(true);
+        toast.error(error.message);
       });
   }
 
   return (
     <>
-      <Toast
-        isVisible={toastIsVisible}
-        onClose={() => setToastIsVisible(false)}
-        type={toastType}
-        description={toastMessage}
-      />
+      <Toast />
       <Modal open={isModalVisible} onClose={() => setIsModalVisible(false)}>
         <Box
           sx={{
@@ -128,35 +113,23 @@ export default function TableConsult({
               </Button>
             </>
           )}
-          {actionType == 'edit' && (
-            <>
-              <TextField
-                label="Diagnostico"
-                value={diagnostic}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setDiagnostic(event.target.value);
-                }}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <Button fullWidth onClick={handleCompleteConsult}>
-                Completar
-              </Button>
-            </>
-          )}
         </Box>
       </Modal>
       <DataGrid
         rows={consultsData}
-        // columns={createColumns({
-        //   onOpenEditModal: handleOpenEditModal,
-        //   onDeleteDoctor: handleDeleteDoctor,
-        // })}
         columns={createConsultColumns({
           onCompleteConsult: id => {
             setIsModalVisible(true);
             setActionType('complete');
             setConsultId(id);
+          },
+          onCancelConsult: id => {
+            setIsModalVisible(true);
+            setActionType('cancel');
+            setConsultId(id);
+          },
+          onUpdateConsult: consultData => {
+            navigate('/appointment', { state: consultData });
           },
         })}
       />

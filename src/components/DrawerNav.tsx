@@ -16,7 +16,7 @@ export default function DrawerNav() {
         }}
         role="presentation"
       >
-        <img src="/public/logo-name.png" style={{ padding: '0 32px' }} />
+        <img src="/logo-name.png" style={{ padding: '0 32px' }} />
         <List
           sx={{
             width: 250,
@@ -33,6 +33,11 @@ export default function DrawerNav() {
             path="/admin/doctors"
           />
           <NavItem name="Consultas" icon={<Event />} path="/admin/consults" />
+          <NavItem
+            name="Historico"
+            icon={<Event />}
+            path="/admin/consults/history"
+          />
         </List>
       </Box>
     </Drawer>

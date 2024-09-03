@@ -56,7 +56,17 @@ class PatientService {
   }
 
   public async deletePatient(cpf: string): Promise<void> {
-    await this.apiClient.delete(`/patients/${cpf}`);
+    try {
+      await this.apiClient.delete(`/patients/${cpf}`);
+    } catch (error) {
+      console.log(`Houve um erro ao criar paciente: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new Error(error.response?.data.message);
+      }
+      throw new Error(
+        'Houve um erro ao criar paciente, tente novamente mais tarde',
+      );
+    }
   }
 }
 

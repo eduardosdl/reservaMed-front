@@ -2,13 +2,18 @@ import { GridColDef } from '@mui/x-data-grid';
 import formatCpf from '../../utils/formatCpf';
 import { Box } from '@mui/material';
 import Button from '../Button';
+import Consult from '../../types/consult';
 
 interface createConsultColumsProps {
   onCompleteConsult: (id: number) => void;
+  onUpdateConsult: (data: Consult) => void;
+  onCancelConsult: (id: number) => void;
 }
 
 export default function createConsultColumns({
   onCompleteConsult,
+  onUpdateConsult,
+  onCancelConsult,
 }: createConsultColumsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -48,14 +53,21 @@ export default function createConsultColumns({
       headerName: 'Ações',
       width: 350,
       renderCell: params => {
-        const { id, status } = params.row;
+        const consult = params.row;
         return (
           <Box>
-            {status != 'P' && (
-              <Button onClick={() => onCompleteConsult(id)} color="success">
-                Completar
-              </Button>
-            )}
+            <Button
+              onClick={() => onCompleteConsult(consult.id)}
+              color="success"
+            >
+              Completar
+            </Button>
+            <Button sx={{ mx: 1 }} onClick={() => onUpdateConsult(consult)}>
+              Alterar
+            </Button>
+            <Button onClick={() => onCancelConsult(consult.id)} color="error">
+              Cancelar
+            </Button>
           </Box>
         );
       },

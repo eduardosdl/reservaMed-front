@@ -1,37 +1,35 @@
 import { useEffect, useState } from 'react';
-import { AlertColor, Box } from '@mui/material';
+import { toast } from 'react-toastify';
+import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
+import createColumns from './DefColumns';
 import Button from '../../../components/Button';
 import Toast from '../../../components/Toast';
-import ModalForm from './ModalForm';
-import createColumns from './DefColumns';
-import Doctor from '../../../types/doctor';
+import ModalForm from '../../../components/ModalForm';
+import DoctorForm from '../../../components/DoctorForm';
 import DoctorService from '../../../services/DoctorService';
+import Doctor from '../../../types/doctor';
 
 export default function Doctors() {
   // inicializacao dos estados
   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [modalOpen, setModalOpen] = useState(false);
   const [doctorCrmToEdit, setDoctorCrmToEdit] = useState('');
-  const [toastIsVisible, setToastIsVisible] = useState(false);
-  const [toastType, setToastType] = useState<AlertColor>('error');
-  const [toastMessage, setToastMessage] = useState(
-    'Houve um erro ao buscar médicos',
-  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const [initialData, setInitialData] = useState<Doctor | undefined>(undefined);
 
   function getAllDoctors() {
+    setIsLoading(true);
     DoctorService.getAllDoctors()
       .then(data => {
         setDoctors(data);
       })
       .catch(error => {
+        toast('Houve um erro ao buscar médicos, tente novamente mais tarde');
         console.error('Houve um erro ao buscar médicos:', error);
-        setToastType('error');
-        setToastMessage('Houve um erro ao buscar médicos');
-        setToastIsVisible(true);
-      });
+      })
+      .finally(() => setIsLoading(false));
   }
 
   // carregamento dos dados na tabela
@@ -40,23 +38,21 @@ export default function Doctors() {
   }, []);
 
   function handleCreateDoctor(doctorData: Doctor) {
+    setIsLoading(true);
     DoctorService.createDoctor(doctorData)
       .then(data => {
         setDoctors(prevState => [...prevState, data]);
-        setToastType('success');
-        setToastMessage('Paciente criado com sucesso');
-        setToastIsVisible(true);
+        toast.success('Médico criado com sucesso');
         setModalOpen(false);
       })
       .catch(error => {
-        setToastType('error');
-        setToastMessage(error.message);
-        setToastIsVisible(true);
-      });
+        toast.error(error.message);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   function handleUpdateDoctor(doctorData: Doctor) {
-    console.log(doctorData);
+    setIsLoading(true);
     DoctorService.updateDoctor(doctorCrmToEdit, doctorData)
       .then(updatedDoctor => {
         setDoctors(prevState =>
@@ -64,48 +60,28 @@ export default function Doctors() {
             doctor.id === updatedDoctor.id ? updatedDoctor : doctor,
           ),
         );
-        setToastType('success');
-        setToastMessage('Paciente alterado com sucesso');
-        setToastIsVisible(true);
+        toast.success('Médico alterado com sucesso');
         setModalOpen(false);
       })
       .catch(error => {
-        setToastType('error');
-        setToastMessage(error.message);
-        setToastIsVisible(true);
-      });
+        toast.error(error.message);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   function handleDeleteDoctor(crmToDelete: string) {
+    setIsLoading(true);
     DoctorService.deleteDoctor(crmToDelete)
       .then(() => {
         setDoctors(prevState =>
           prevState.filter(doctor => doctor.crm !== crmToDelete),
         );
-        setToastType('success');
-        setToastMessage('Paciente exclído com sucesso');
-        setToastIsVisible(true);
+        toast.success('Médico excluído com sucesso');
       })
       .catch(error => {
-        console.log(`Houve um erro ao excluir paciente: ${error}`);
-        setToastType('error');
-        setToastMessage(
-          'Houve um erro ao excluir paciente, tente novamente mais tarde',
-        );
-        setToastIsVisible(true);
-      });
-  }
-
-  function handleOpenCreateModal() {
-    setDoctorCrmToEdit('');
-    setInitialData(undefined);
-    setModalOpen(true);
-  }
-
-  function handleOpenEditModal(data: Doctor) {
-    setDoctorCrmToEdit(data.crm);
-    setInitialData(data);
-    setModalOpen(true);
+        toast.error(error.message);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   // valida se for criacao ou atualizacao de paciente
@@ -128,27 +104,32 @@ export default function Doctors() {
         gap: 2,
       }}
     >
-      <Toast
-        isVisible={toastIsVisible}
-        onClose={() => setToastIsVisible(false)}
-        type={toastType}
-        description={toastMessage}
-      />
-      <ModalForm
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        initialData={initialData}
-        onSubmit={handleSubmit}
-      />
+      <Toast />
 
-      <Button sx={{ width: 'fit-content' }} onClick={handleOpenCreateModal}>
-        Novo Paciente
+      <ModalForm open={modalOpen} onClose={() => setModalOpen(false)}>
+        <DoctorForm onSubmit={handleSubmit} initialData={initialData} />
+      </ModalForm>
+
+      <Button
+        sx={{ width: 'fit-content' }}
+        onClick={() => {
+          setDoctorCrmToEdit('');
+          setInitialData(undefined);
+          setModalOpen(true);
+        }}
+      >
+        Novo Médico
       </Button>
       {/* renderiza a tabela de acordo com DefColumns */}
       <DataGrid
         rows={doctors}
+        loading={isLoading}
         columns={createColumns({
-          onOpenEditModal: handleOpenEditModal,
+          onOpenEditModal: data => {
+            setDoctorCrmToEdit(data.crm);
+            setInitialData(data);
+            setModalOpen(true);
+          },
           onDeleteDoctor: handleDeleteDoctor,
         })}
       />

@@ -1,64 +1,60 @@
 import { useEffect, useState } from 'react';
-import { AlertColor, Box } from '@mui/material';
+import { toast } from 'react-toastify';
+import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-import PatientService from '../../../services/PatientService';
-import Patient from '../../../types/patient';
-import Button from '../../../components/Button';
-import Toast from '../../../components/Toast';
-import ModalForm from './ModalForm';
 import createColumns from './DefColumns';
+import PatientService from '../../../services/PatientService';
+import Button from '../../../components/Button';
+import ModalForm from '../../../components/ModalForm';
+import Toast from '../../../components/Toast';
+import PatientForm from '../../../components/PatientForm';
+import Patient from '../../../types/patient';
 
 export default function Patients() {
   // inicializacao dos estados
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [modalOpen, setModalOpen] = useState(false);
   const [patientCpfToEdit, setPatientCpfToEdit] = useState('');
-  const [toastIsVisible, setToastIsVisible] = useState(false);
-  const [toastType, setToastType] = useState<AlertColor>('error');
-  const [toastMessage, setToastMessage] = useState(
-    'Houve um erro ao buscar pacientes',
-  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const [initialData, setInitialData] = useState<Patient | undefined>(
     undefined,
   );
 
   function getAllPatients() {
+    setIsLoading(true);
     PatientService.getAllPatients()
       .then(data => {
         setPatients(data);
       })
       .catch(error => {
+        toast('Houve um erro ao buscar pacientes, tente novamente mais tarde');
         console.error('Houve um erro ao buscar pacientes:', error);
-        setToastType('error');
-        setToastMessage('Houve um erro ao buscar pacientes');
-        setToastIsVisible(true);
-      });
+      })
+      .finally(() => setIsLoading(false));
   }
 
-  // carregamento dos dados na tabela
+  // carregamento dos dados na tabela ao abrir
   useEffect(() => {
     getAllPatients();
   }, []);
 
   function handleCreatePatient(patientData: Patient) {
+    setIsLoading(true);
     PatientService.createPatient(patientData)
       .then(data => {
         setPatients(prevState => [...prevState, data]);
-        setToastType('success');
-        setToastMessage('Paciente criado com sucesso');
-        setToastIsVisible(true);
+        toast.success('Paciente criado com sucesso');
         setModalOpen(false);
       })
       .catch(error => {
-        setToastType('error');
-        setToastMessage(error.message);
-        setToastIsVisible(true);
-      });
+        toast.error(error.message);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   function handleUpdatePatient(patientData: Patient) {
-    console.log(patientData);
+    setIsLoading(true);
     PatientService.updatePatient(patientCpfToEdit, patientData)
       .then(updatedPatient => {
         setPatients(prevState =>
@@ -66,36 +62,28 @@ export default function Patients() {
             patient.id === updatedPatient.id ? updatedPatient : patient,
           ),
         );
-        setToastType('success');
-        setToastMessage('Paciente alterado com sucesso');
-        setToastIsVisible(true);
+        toast.success('Paciente alterado com sucesso');
         setModalOpen(false);
       })
       .catch(error => {
-        setToastType('error');
-        setToastMessage(error.message);
-        setToastIsVisible(true);
-      });
+        toast.error(error.message);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   function handleDeletePatient(cpfToDelete: string) {
+    setIsLoading(true);
     PatientService.deletePatient(cpfToDelete)
       .then(() => {
         setPatients(prevState =>
           prevState.filter(patient => patient.cpf !== cpfToDelete),
         );
-        setToastType('success');
-        setToastMessage('Paciente exclído com sucesso');
-        setToastIsVisible(true);
+        toast.success('Paciente excluído com sucesso');
       })
       .catch(error => {
-        console.log(`Houve um erro ao excluir paciente: ${error}`);
-        setToastType('error');
-        setToastMessage(
-          'Houve um erro ao excluir paciente, tente novamente mais tarde',
-        );
-        setToastIsVisible(true);
-      });
+        toast(error.message);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   function handleOpenCreateModal() {
@@ -130,18 +118,10 @@ export default function Patients() {
         gap: 2,
       }}
     >
-      <Toast
-        isVisible={toastIsVisible}
-        onClose={() => setToastIsVisible(false)}
-        type={toastType}
-        description={toastMessage}
-      />
-      <ModalForm
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        initialData={initialData}
-        onSubmit={handleSubmit}
-      />
+      <Toast />
+      <ModalForm open={modalOpen} onClose={() => setModalOpen(false)}>
+        <PatientForm onSubmit={handleSubmit} initialData={initialData} />
+      </ModalForm>
 
       <Button sx={{ width: 'fit-content' }} onClick={handleOpenCreateModal}>
         Novo Paciente
@@ -149,9 +129,10 @@ export default function Patients() {
       {/* renderiza a tabela de acordo com DefColumns */}
       <DataGrid
         rows={patients}
+        loading={isLoading}
         columns={createColumns({
-          onOpenEditModal: handleOpenEditModal,
-          onDeletePatient: handleDeletePatient,
+          handleOpenEditModal: handleOpenEditModal,
+          handleDeletePatient: handleDeletePatient,
         })}
       />
     </Box>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertColor, Box } from '@mui/material';
+import { Box } from '@mui/material';
 
 import Button from '../../components/Button';
 import Toast from '../../components/Toast';
@@ -7,16 +7,12 @@ import Consult from '../../types/consult';
 import ConsultService from '../../services/ConsultService';
 import TableConsult from '../../components/TableConsult';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function Consults() {
   const navigate = useNavigate();
   // inicializacao dos estados
   const [consults, setConsults] = useState<Consult[]>([]);
-  const [toastIsVisible, setToastIsVisible] = useState(false);
-  const [toastType, setToastType] = useState<AlertColor>('error');
-  const [toastMessage, setToastMessage] = useState(
-    'Houve um erro ao buscar consultas',
-  );
 
   function getAllConsults() {
     ConsultService.getAllConsults()
@@ -25,9 +21,7 @@ export default function Consults() {
       })
       .catch(error => {
         console.error('Houve um erro ao buscar consultas:', error);
-        setToastType('error');
-        setToastMessage('Houve um erro ao buscar consultas');
-        setToastIsVisible(true);
+        toast.error('Houve um erro ao buscar consultas');
       });
   }
 
@@ -47,12 +41,7 @@ export default function Consults() {
         gap: 2,
       }}
     >
-      <Toast
-        isVisible={toastIsVisible}
-        onClose={() => setToastIsVisible(false)}
-        type={toastType}
-        description={toastMessage}
-      />
+      <Toast />
 
       <Button
         sx={{ width: 'fit-content' }}

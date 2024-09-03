@@ -56,7 +56,17 @@ class DoctorService {
   }
 
   public async deleteDoctor(crm: string): Promise<void> {
-    await this.apiClient.delete(`/doctors/${crm}`);
+    try {
+      await this.apiClient.delete(`/doctors/${crm}`);
+    } catch (error) {
+      console.log(`Houve um erro ao criar médicos: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new Error(error.response?.data.message);
+      }
+      throw new Error(
+        'Houve um erro ao criar médicos, tente novamente mais tarde',
+      );
+    }
   }
 }
 

@@ -1,33 +1,19 @@
-import { Alert, AlertColor, Snackbar } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-interface ToastProps {
-  isVisible: boolean;
-  onClose: () => void;
-  description: string;
-  type: AlertColor;
-}
-
-export default function Toast({
-  isVisible,
-  onClose,
-  description,
-  type,
-}: ToastProps) {
+export default function Toast() {
   return (
-    <Snackbar
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      open={isVisible}
-      autoHideDuration={6000}
-      onClose={onClose}
-    >
-      <Alert
-        onClose={onClose}
-        severity={type}
-        variant="filled"
-        sx={{ width: '100%' }}
-      >
-        {description}
-      </Alert>
-    </Snackbar>
+    <ToastContainer
+      position="top-center"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="colored"
+    />
   );
 }

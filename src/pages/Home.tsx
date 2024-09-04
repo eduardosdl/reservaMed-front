@@ -32,7 +32,7 @@ export default function Home() {
           Agendar consulta
         </Button>
         <Button sx={{ width: 1 }} onClick={() => navigate('/consults')}>
-          Médico
+          Visuaizar consultas
         </Button>
       </Card>
     </Container>

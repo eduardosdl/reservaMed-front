@@ -34,6 +34,7 @@ export default function ConsultForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Tipagem correta para os dados da consulta
   const consultData = location.state as Consult | undefined;
@@ -69,18 +70,22 @@ export default function ConsultForm() {
   }, [consultData, setValue]);
 
   function handleCreateConsult(consultFormData: CreateConsult) {
+    setIsLoading(true);
     ConsultService.createConsult(consultFormData)
       .then(() => navigate(-1))
-      .catch(error => toast.error(error.message));
+      .catch(error => toast.error(error.message))
+      .finally(() => setIsLoading(false));
   }
 
   function handleUpdateConsult(
     consultId: number,
     consultFormData: CreateConsult,
   ) {
+    setIsLoading(true);
     ConsultService.updateConsult(consultId, consultFormData)
       .then(() => navigate(-1))
-      .catch(error => toast.error(error.message));
+      .catch(error => toast.error(error.message))
+      .finally(() => setIsLoading(false));
   }
 
   const onSubmit = async (data: ConsultFormValues) => {
@@ -91,6 +96,7 @@ export default function ConsultForm() {
 
     if (consultData) {
       handleUpdateConsult(consultData.id, formatData);
+      return;
     }
 
     handleCreateConsult(formatData);
@@ -187,6 +193,7 @@ export default function ConsultForm() {
             type="submit"
             variant="contained"
             color="primary"
+            loading={isLoading}
           >
             {consultData ? 'Atualizar Consulta' : 'Agendar Consulta'}
           </Button>

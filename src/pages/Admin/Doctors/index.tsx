@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-import createColumns from './DefColumns';
+import DoctorColums from './DoctorColumns';
 import Button from '../../../components/Button';
 import Toast from '../../../components/Toast';
 import ModalForm from '../../../components/ModalForm';
@@ -107,7 +107,11 @@ export default function Doctors() {
       <Toast />
 
       <ModalForm open={modalOpen} onClose={() => setModalOpen(false)}>
-        <DoctorForm onSubmit={handleSubmit} initialData={initialData} />
+        <DoctorForm
+          onSubmit={handleSubmit}
+          initialData={initialData}
+          isLoading={isLoading}
+        />
       </ModalForm>
 
       <Button
@@ -124,13 +128,13 @@ export default function Doctors() {
       <DataGrid
         rows={doctors}
         loading={isLoading}
-        columns={createColumns({
-          onOpenEditModal: data => {
+        columns={DoctorColums({
+          handleOpenEditModal: data => {
             setDoctorCrmToEdit(data.crm);
             setInitialData(data);
             setModalOpen(true);
           },
-          onDeleteDoctor: handleDeleteDoctor,
+          handleDeleteDoctor: handleDeleteDoctor,
         })}
       />
     </Box>

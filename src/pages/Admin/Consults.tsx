@@ -51,7 +51,7 @@ export default function Consults() {
       >
         Nova consulta
       </Button>
-      <TableConsult consultsData={consults} />
+      <TableConsult consultsData={consults} realoadData={getAllConsults} />
     </Box>
   );
 }

@@ -1,11 +1,10 @@
 import { DataGrid } from '@mui/x-data-grid';
 import Consult from '../../types/consult';
 import createConsultColumns from './DefColumns';
-import { Box, Modal, TextField } from '@mui/material';
+import { Box, Modal, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import Button from '../Button';
 import ConsultService from '../../services/ConsultService';
-import Toast from '../Toast';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,19 +24,24 @@ export default function TableConsult({
   const [reasonCancel, setReasonCancel] = useState('');
   const [consultId, setConsultId] = useState(0);
   const [actionType, setActionType] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleCancelConsult() {
+    setIsLoading(true);
     ConsultService.cancelConsult(consultId, reasonCancel)
       .then(() => {
         toast.success('Consulta cancelada com sucesso!');
         realoadData();
+        setIsModalVisible(false);
       })
       .catch(error => {
         toast.error(error.message);
-      });
+      })
+      .finally(() => setIsLoading(false));
   }
 
   function handleCompleteConsult() {
+    setIsLoading(true);
     ConsultService.completeConsult(consultId, {
       diagnostic,
       prescription,
@@ -45,15 +49,29 @@ export default function TableConsult({
       .then(() => {
         toast.success('Consulta completa!');
         realoadData();
+        setIsModalVisible(false);
       })
       .catch(error => {
         toast.error(error.message);
-      });
+      })
+      .finally(() => setIsLoading(false));
+  }
+
+  function handleShowConsult(consultId: number) {
+    console.log(`Numero da consulta: ${consultId}`);
+    ConsultService.getPrescription(consultId)
+      .then(data => {
+        console.log(data);
+        setDiagnostic(data.diagnostic);
+        setPrescription(data.prescription);
+        setActionType('prescription');
+        setIsModalVisible(true);
+      })
+      .catch(error => toast.error(error.message));
   }
 
   return (
     <>
-      <Toast />
       <Modal open={isModalVisible} onClose={() => setIsModalVisible(false)}>
         <Box
           sx={{
@@ -83,7 +101,11 @@ export default function TableConsult({
                 fullWidth
                 sx={{ mb: 4 }}
               />
-              <Button fullWidth onClick={handleCancelConsult}>
+              <Button
+                fullWidth
+                onClick={handleCancelConsult}
+                loading={isLoading}
+              >
                 Cancelar
               </Button>
             </>
@@ -108,9 +130,19 @@ export default function TableConsult({
                 fullWidth
                 sx={{ mb: 4 }}
               />
-              <Button fullWidth onClick={handleCompleteConsult}>
+              <Button
+                fullWidth
+                onClick={handleCompleteConsult}
+                loading={isLoading}
+              >
                 Completar
               </Button>
+            </>
+          )}
+          {actionType == 'prescription' && (
+            <>
+              <Typography>Diagnostico: {diagnostic}</Typography>
+              <Typography>Prescrição: {prescription}</Typography>
             </>
           )}
         </Box>
@@ -119,6 +151,8 @@ export default function TableConsult({
         rows={consultsData}
         columns={createConsultColumns({
           onCompleteConsult: id => {
+            setPrescription('');
+            setDiagnostic('');
             setIsModalVisible(true);
             setActionType('complete');
             setConsultId(id);
@@ -131,6 +165,7 @@ export default function TableConsult({
           onUpdateConsult: consultData => {
             navigate('/appointment', { state: consultData });
           },
+          onShowPrecription: handleShowConsult,
         })}
       />
     </>

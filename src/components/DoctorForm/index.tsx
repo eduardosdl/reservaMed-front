@@ -9,9 +9,14 @@ import formatPhone from '../../utils/formatPhone';
 interface DoctorFormProps {
   initialData?: Doctor;
   onSubmit: (data: Doctor) => void;
+  isLoading: boolean;
 }
 
-export default function DoctorForm({ initialData, onSubmit }: DoctorFormProps) {
+export default function DoctorForm({
+  initialData,
+  onSubmit,
+  isLoading,
+}: DoctorFormProps) {
   const { control, handleSubmit, errors, handleFormSubmit } = useDoctorForm({
     initialData,
     onSubmit,
@@ -69,6 +74,7 @@ export default function DoctorForm({ initialData, onSubmit }: DoctorFormProps) {
           type="submit"
           variant="contained"
           color="primary"
+          loading={isLoading}
         >
           Enviar
         </Button>

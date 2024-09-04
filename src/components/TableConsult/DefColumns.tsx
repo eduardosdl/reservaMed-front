@@ -1,6 +1,6 @@
 import { GridColDef } from '@mui/x-data-grid';
 import formatCpf from '../../utils/formatCpf';
-import { Box } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import Button from '../Button';
 import Consult from '../../types/consult';
 
@@ -8,12 +8,14 @@ interface createConsultColumsProps {
   onCompleteConsult: (id: number) => void;
   onUpdateConsult: (data: Consult) => void;
   onCancelConsult: (id: number) => void;
+  onShowPrecription: (id: number) => void;
 }
 
 export default function createConsultColumns({
   onCompleteConsult,
   onUpdateConsult,
   onCancelConsult,
+  onShowPrecription,
 }: createConsultColumsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -24,13 +26,13 @@ export default function createConsultColumns({
     },
     {
       field: 'patientCpf',
-      headerName: 'Nome do paciente',
+      headerName: 'CPF do paciente',
       width: 200,
       renderCell: params => formatCpf(params.row.patient.cpf),
     },
     {
       field: 'date',
-      headerName: 'Nome do paciente',
+      headerName: 'Data da consulta',
       width: 200,
       type: 'string',
       valueFormatter: value => {
@@ -54,22 +56,41 @@ export default function createConsultColumns({
       width: 350,
       renderCell: params => {
         const consult = params.row;
-        return (
-          <Box>
-            <Button
-              onClick={() => onCompleteConsult(consult.id)}
-              color="success"
-            >
-              Completar
-            </Button>
-            <Button sx={{ mx: 1 }} onClick={() => onUpdateConsult(consult)}>
-              Alterar
-            </Button>
-            <Button onClick={() => onCancelConsult(consult.id)} color="error">
-              Cancelar
-            </Button>
-          </Box>
-        );
+        switch (consult.status) {
+          case 'A':
+            return (
+              <Box>
+                <Button
+                  onClick={() => onCompleteConsult(consult.id)}
+                  color="success"
+                >
+                  Completar
+                </Button>
+                <Button sx={{ mx: 1 }} onClick={() => onUpdateConsult(consult)}>
+                  Alterar
+                </Button>
+                <Button
+                  onClick={() => onCancelConsult(consult.id)}
+                  color="error"
+                >
+                  Cancelar
+                </Button>
+              </Box>
+            );
+          case 'C':
+            return <Chip color="error" label="Cancelada" />;
+          case 'P':
+            return (
+              <Button
+                color="secondary"
+                onClick={() => onShowPrecription(consult.id)}
+              >
+                Diagnostico
+              </Button>
+            );
+          default:
+            return null;
+        }
       },
     },
   ];

@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-import createColumns from './DefColumns';
+import PatientColumns from './PatientColumns';
 import PatientService from '../../../services/PatientService';
 import Button from '../../../components/Button';
 import ModalForm from '../../../components/ModalForm';
@@ -120,7 +120,11 @@ export default function Patients() {
     >
       <Toast />
       <ModalForm open={modalOpen} onClose={() => setModalOpen(false)}>
-        <PatientForm onSubmit={handleSubmit} initialData={initialData} />
+        <PatientForm
+          onSubmit={handleSubmit}
+          initialData={initialData}
+          isLoading={isLoading}
+        />
       </ModalForm>
 
       <Button sx={{ width: 'fit-content' }} onClick={handleOpenCreateModal}>
@@ -130,7 +134,7 @@ export default function Patients() {
       <DataGrid
         rows={patients}
         loading={isLoading}
-        columns={createColumns({
+        columns={PatientColumns({
           handleOpenEditModal: handleOpenEditModal,
           handleDeletePatient: handleDeletePatient,
         })}

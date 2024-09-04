@@ -7,7 +7,7 @@ import formatCep from '../../../utils/formatCep';
 import Patient from '../../../types/patient';
 import ActionTableButton from '../../../components/ActionTableButtons';
 
-interface CreateColumnsProps {
+interface PatientColumnsProps {
   handleOpenEditModal: (patientData: Patient) => void;
   handleDeletePatient: (cpf: string) => void;
 }
@@ -15,7 +15,7 @@ interface CreateColumnsProps {
 export default function PatientColumns({
   handleOpenEditModal,
   handleDeletePatient,
-}: CreateColumnsProps): GridColDef[] {
+}: PatientColumnsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
       field: 'name',

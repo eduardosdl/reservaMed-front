@@ -4,15 +4,15 @@ import formatPhone from '../../../utils/formatPhone';
 import Doctor from '../../../types/doctor';
 import ActionTableButton from '../../../components/ActionTableButtons';
 
-interface CreateColumnsProps {
+interface DoctorColumsProps {
   handleOpenEditModal: (doctorData: Doctor) => void;
   handleDeleteDoctor: (crm: string) => void;
 }
 
-export default function createColumns({
+export default function DoctorColums({
   handleOpenEditModal,
   handleDeleteDoctor,
-}: CreateColumnsProps): GridColDef[] {
+}: DoctorColumsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
       field: 'name',

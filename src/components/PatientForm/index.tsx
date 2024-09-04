@@ -11,11 +11,13 @@ import formatCep from '../../utils/formatCep';
 interface PatientFormProps {
   initialData?: Patient;
   onSubmit: (data: Patient) => void;
+  isLoading: boolean;
 }
 
 export default function PatientForm({
   initialData,
   onSubmit,
+  isLoading,
 }: PatientFormProps) {
   const {
     control,
@@ -138,6 +140,7 @@ export default function PatientForm({
           type="submit"
           variant="contained"
           color="primary"
+          loading={isLoading}
         >
           Enviar
         </Button>

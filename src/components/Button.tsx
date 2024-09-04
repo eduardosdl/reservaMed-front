@@ -23,6 +23,7 @@ export default function Button({
       sx={{ ...sx, textTransform: 'none' }}
       {...restProps}
       endIcon={loading && <CircularProgress size={24} />}
+      disabled={loading}
     >
       {loading ? '' : children}
     </MaterialButton>

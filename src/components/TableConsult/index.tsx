@@ -148,6 +148,7 @@ export default function TableConsult({
         </Box>
       </Modal>
       <DataGrid
+        getRowId={(row) => row.id_consult || row.id}
         rows={consultsData}
         columns={createConsultColumns({
           onCompleteConsult: id => {

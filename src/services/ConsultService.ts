@@ -22,6 +22,12 @@ class ConsultService {
     return response.data;
   }
 
+  public async getHistoryConsults(): Promise<Consult[]> {
+    const response: AxiosResponse<Consult[]> =
+      await this.apiClient.get('/historyConsult');
+    return response.data;
+  }
+
   public async getPrescription(consultId: number): Promise<Prescription> {
     try {
       const response: AxiosResponse<Prescription> = await this.apiClient.get(

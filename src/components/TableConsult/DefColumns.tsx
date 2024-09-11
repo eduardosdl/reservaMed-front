@@ -51,17 +51,24 @@ export default function createConsultColumns({
       renderCell: params => params.row.doctor.name,
     },
     {
+      field: 'specialty',
+      headerName: 'Especialidade',
+      width: 200,
+      renderCell: params => params.row.doctor.specialty,
+    },
+    {
       field: 'id',
       headerName: 'Ações',
       width: 350,
       renderCell: params => {
         const consult = params.row;
+        const consultId = consult.id_consult || consult.id;
         switch (consult.status) {
           case 'A':
             return (
               <Box>
                 <Button
-                  onClick={() => onCompleteConsult(consult.id)}
+                  onClick={() => onCompleteConsult(consultId)}
                   color="success"
                 >
                   Completar
@@ -70,7 +77,7 @@ export default function createConsultColumns({
                   Alterar
                 </Button>
                 <Button
-                  onClick={() => onCancelConsult(consult.id)}
+                  onClick={() => onCancelConsult(consultId)}
                   color="error"
                 >
                   Cancelar
@@ -83,7 +90,7 @@ export default function createConsultColumns({
             return (
               <Button
                 color="secondary"
-                onClick={() => onShowPrecription(consult.id)}
+                onClick={() => onShowPrecription(consultId)}
               >
                 Diagnostico
               </Button>

@@ -1,21 +1,40 @@
-import { Outlet } from 'react-router-dom';
-import { Box } from '@mui/material';
-
-import DrawerNav from '../components/DrawerNav';
+import { Card, Container } from '@mui/material';
+import Button from '../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const navigate = useNavigate();
+
   return (
-    <Box
+    <Container
+      maxWidth="lg"
       sx={{
-        height: '100vh',
-        width: 1,
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
       }}
     >
-      <DrawerNav />
-      <Outlet />
-    </Box>
+      <Card
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          p: 4,
+          gap: 2,
+        }}
+      >
+        <Button sx={{ width: 1 }} onClick={() => navigate('/admin')}>
+          Administrador
+        </Button>
+        <Button sx={{ width: 1 }} onClick={() => navigate('/appointment')}>
+          Agendar consulta
+        </Button>
+        <Button sx={{ width: 1 }} onClick={() => navigate('/consults')}>
+          Visuaizar consultas
+        </Button>
+      </Card>
+    </Container>
   );
 }

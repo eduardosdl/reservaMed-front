@@ -1,5 +1,5 @@
 import { Box, Drawer, List } from '@mui/material';
-import { LocalHospital, Person } from '@mui/icons-material';
+import { LocalHospital, Person, Event } from '@mui/icons-material';
 
 import NavItem from './NavItem';
 
@@ -16,9 +16,28 @@ export default function DrawerNav() {
         }}
         role="presentation"
       >
-        <List>
-          <NavItem name="Pacientes" icon={<Person />} path="/patients" />
-          <NavItem name="Médicos" icon={<LocalHospital />} path="/doctors" />
+        <img src="/logo-name.png" style={{ padding: '0 32px' }} />
+        <List
+          sx={{
+            width: 250,
+            mt: 8,
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <NavItem name="Pacientes" icon={<Person />} path="/admin/patients" />
+          <NavItem
+            name="Médicos"
+            icon={<LocalHospital />}
+            path="/admin/doctors"
+          />
+          <NavItem name="Consultas" icon={<Event />} path="/admin/consults" />
+          <NavItem
+            name="Historico"
+            icon={<Event />}
+            path="/admin/consults/history"
+          />
         </List>
       </Box>
     </Drawer>

@@ -1,10 +1,10 @@
 import { Container, TextField } from '@mui/material';
-import Button from '../components/Button';
-import TableConsult from '../components/TableConsult';
+import Button from '../componentsOld/Button';
+import TableConsult from '../componentsOld/TableConsult';
 import Consult from '../types/consult';
 import { useState } from 'react';
 import ConsultService from '../services/ConsultService';
-import Toast from '../components/Toast';
+import Toast from '../componentsOld/Toast';
 import formatCpf from '../utils/formatCpf';
 import { toast } from 'react-toastify';
 

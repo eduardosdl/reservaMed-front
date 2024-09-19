@@ -1,5 +1,5 @@
+import { ReactNode } from 'react';
 import {
-  Icon,
   ListItemButton,
   ListItemButtonProps,
   ListItemIcon,
@@ -9,11 +9,17 @@ import { useNavigate } from 'react-router-dom';
 
 interface NavItemProps extends ListItemButtonProps {
   name: string;
-  icon: string;
+  icon: ReactNode;
   path: string;
 }
 
-export function NavItem({ name, icon, path }: NavItemProps) {
+export default function NavItem({
+  name,
+  icon,
+  path,
+  sx,
+  ...restProps
+}: NavItemProps) {
   const navigate = useNavigate();
 
   function isActive(path: string): boolean {
@@ -24,6 +30,7 @@ export function NavItem({ name, icon, path }: NavItemProps) {
     <ListItemButton
       selected={isActive(path)}
       sx={{
+        ...sx,
         color: theme => theme.palette.primary.contrastText,
         '&.Mui-selected': {
           backgroundColor: theme => theme.palette.primary.light,
@@ -34,10 +41,11 @@ export function NavItem({ name, icon, path }: NavItemProps) {
         },
       }}
       onClick={() => navigate(path)}
+      {...restProps}
     >
       {icon && (
         <ListItemIcon>
-          <Icon>{icon}</Icon>
+          <span style={{ color: 'inherit' }}>{icon}</span>
         </ListItemIcon>
       )}
 

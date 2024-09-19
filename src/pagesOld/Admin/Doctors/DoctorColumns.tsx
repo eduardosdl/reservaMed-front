@@ -2,7 +2,7 @@ import { GridColDef } from '@mui/x-data-grid';
 
 import formatPhone from '../../../utils/formatPhone';
 import Doctor from '../../../types/doctor';
-import ActionTableButton from '../../../components/ActionTableButtons';
+import ActionTableButton from '../../../componentsOld/ActionTableButtons';
 
 interface DoctorColumsProps {
   handleOpenEditModal: (doctorData: Doctor) => void;

@@ -5,10 +5,10 @@ import { DataGrid } from '@mui/x-data-grid';
 
 import PatientColumns from './PatientColumns';
 import PatientService from '../../../services/PatientService';
-import Button from '../../../components/Button';
-import ModalForm from '../../../components/ModalForm';
-import Toast from '../../../components/Toast';
-import PatientForm from '../../../components/PatientForm';
+import Button from '../../../componentsOld/Button';
+import ModalForm from '../../../componentsOld/ModalForm';
+import Toast from '../../../componentsOld/Toast';
+import PatientForm from '../../../componentsOld/PatientForm';
 import Patient from '../../../types/patient';
 
 export default function Patients() {

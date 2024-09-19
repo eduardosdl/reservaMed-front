@@ -1,13 +1,13 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import Home from './pages/Home';
-import Admin from './pages/Admin';
-import Patients from './pages/Admin/Patients';
-import Doctors from './pages/Admin/Doctors';
-import Consults from './pages/Admin/Consults';
-import CreateConsult from './pages/CreateConsult';
-import ShowConsults from './pages/ShowConsults';
-import HistoryConsults from './pages/Admin/HistoryConsults';
+import Home from './pagesOld/Home';
+import Admin from './pagesOld/Admin';
+import Patients from './pagesOld/Admin/Patients';
+import Doctors from './pagesOld/Admin/Doctors';
+import Consults from './pagesOld/Admin/Consults';
+import CreateConsult from './pagesOld/CreateConsult';
+import ShowConsults from './pagesOld/ShowConsults';
+import HistoryConsults from './pagesOld/Admin/HistoryConsults';
 
 export default function AppRoutes() {
   return (

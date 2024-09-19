@@ -1,8 +1,8 @@
 import { Card, Container } from '@mui/material';
-import Button from '../components/Button';
+import Button from '../componentsOld/Button';
 import { useNavigate } from 'react-router-dom';
 
-export default function Home() {
+export function Home() {
   const navigate = useNavigate();
 
   return (

@@ -4,10 +4,10 @@ import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
 import DoctorColums from './DoctorColumns';
-import Button from '../../../components/Button';
-import Toast from '../../../components/Toast';
-import ModalForm from '../../../components/ModalForm';
-import DoctorForm from '../../../components/DoctorForm';
+import Button from '../../../componentsOld/Button';
+import Toast from '../../../componentsOld/Toast';
+import ModalForm from '../../../componentsOld/ModalForm';
+import DoctorForm from '../../../componentsOld/DoctorForm';
 import DoctorService from '../../../services/DoctorService';
 import Doctor from '../../../types/doctor';
 

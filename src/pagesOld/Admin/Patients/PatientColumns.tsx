@@ -5,7 +5,7 @@ import formatCpf from '../../../utils/formatCpf';
 import formatPhone from '../../../utils/formatPhone';
 import formatCep from '../../../utils/formatCep';
 import Patient from '../../../types/patient';
-import ActionTableButton from '../../../components/ActionTableButtons';
+import ActionTableButton from '../../../componentsOld/ActionTableButtons';
 
 interface PatientColumnsProps {
   handleOpenEditModal: (patientData: Patient) => void;

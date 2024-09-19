@@ -6,9 +6,9 @@ import { Container, MenuItem, TextField, Grid } from '@mui/material';
 import { toast } from 'react-toastify';
 import * as z from 'zod';
 
-import Toast from '../components/Toast';
-import FormInput from '../components/InputForm';
-import Button from '../components/Button';
+import Toast from '../componentsOld/Toast';
+import FormInput from '../componentsOld/InputForm';
+import Button from '../componentsOld/Button';
 import DoctorService from '../services/DoctorService';
 import ConsultService from '../services/ConsultService';
 import Doctor from '../types/doctor';

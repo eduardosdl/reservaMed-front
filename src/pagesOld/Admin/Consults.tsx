@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 
-import Button from '../../components/Button';
-import Toast from '../../components/Toast';
+import Button from '../../componentsOld/Button';
+import Toast from '../../componentsOld/Toast';
 import Consult from '../../types/consult';
 import ConsultService from '../../services/ConsultService';
-import TableConsult from '../../components/TableConsult';
+import TableConsult from '../../componentsOld/TableConsult';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-export default function HistoryConsults() {
+export default function Consults() {
   const navigate = useNavigate();
   // inicializacao dos estados
   const [consults, setConsults] = useState<Consult[]>([]);
 
   function getAllConsults() {
-    ConsultService.getHistoryConsults()
+    ConsultService.getAllConsults()
       .then(data => {
         setConsults(data);
       })

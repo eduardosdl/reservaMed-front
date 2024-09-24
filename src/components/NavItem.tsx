@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Icon,
   ListItemButton,
@@ -5,11 +7,10 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 interface NavItemProps extends ListItemButtonProps {
   name: string;
-  icon: string;
+  icon: ReactNode;
   path: string;
 }
 

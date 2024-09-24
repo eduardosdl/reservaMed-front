@@ -1,7 +1,9 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import Doctor from '../types/doctor';
+import { Doctor } from '../types/doctor';
+import { APIError } from '../errors/ApiError';
 
-class DoctorService {
+export class DoctorService {
+  private static instance: DoctorService;
   private apiClient: AxiosInstance;
 
   constructor() {
@@ -13,10 +15,27 @@ class DoctorService {
     });
   }
 
+  public static getInstance(): DoctorService {
+    if (!DoctorService.instance) {
+      DoctorService.instance = new DoctorService();
+    }
+    return DoctorService.instance;
+  }
+
   public async getAllDoctors(): Promise<Doctor[]> {
-    const response: AxiosResponse<Doctor[]> =
-      await this.apiClient.get('/doctors');
-    return response.data;
+    try {
+      const response: AxiosResponse<Doctor[]> =
+        await this.apiClient.get('/doctors');
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar médicos: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar médicos, tente novamente mais tarde',
+      );
+    }
   }
 
   public async createDoctor(doctor: Doctor): Promise<Doctor> {
@@ -29,9 +48,9 @@ class DoctorService {
     } catch (error) {
       console.log(`Houve um erro ao criar médicos: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao criar médicos, tente novamente mais tarde',
       );
     }
@@ -45,12 +64,12 @@ class DoctorService {
       );
       return response.data;
     } catch (error) {
-      console.log(`Houve um erro ao criar médicos: ${error}`);
+      console.log(`Houve um erro ao atualizar médicos: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
-        'Houve um erro ao criar médicos, tente novamente mais tarde',
+      throw new APIError(
+        'Houve um erro ao atualizar médicos, tente novamente mais tarde',
       );
     }
   }
@@ -59,15 +78,13 @@ class DoctorService {
     try {
       await this.apiClient.delete(`/doctors/${crm}`);
     } catch (error) {
-      console.log(`Houve um erro ao criar médicos: ${error}`);
+      console.log(`Houve um erro ao excluir médico: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
-        'Houve um erro ao criar médicos, tente novamente mais tarde',
+      throw new APIError(
+        'Houve um erro ao excluir médico, tente novamente mais tarde',
       );
     }
   }
 }
-
-export default new DoctorService();

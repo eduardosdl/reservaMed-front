@@ -26,6 +26,7 @@ export function DrawerProvider({ children }: DrawerProviderProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawerOpen = useCallback(() => {
+    console.log('heelo');
     setIsDrawerOpen(oldDrawerState => !oldDrawerState);
   }, []);
 

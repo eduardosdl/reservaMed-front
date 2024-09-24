@@ -3,10 +3,10 @@ import { Grid } from '@mui/material';
 import useFormPatient from './useFormPatient';
 import FormInput from '../InputForm';
 import Button from '../Button';
-import Patient from '../../types/patient';
-import formatPhone from '../../utils/formatPhone';
-import formatCpf from '../../utils/formatCpf';
-import formatCep from '../../utils/formatCep';
+import { Patient } from '../../types/patient';
+import { formatPhone } from '../../utils/formatPhone';
+import { formatCpf } from '../../utils/formatCpf';
+import { formatCep } from '../../utils/formatCep';
 
 interface PatientFormProps {
   initialData?: Patient;

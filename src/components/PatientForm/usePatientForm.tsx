@@ -1,28 +1,31 @@
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { z } from 'zod';
 
-import {isMinor} from '../../utils/isMinor';
-import { Patient } from '../../types/patient';
 import { CepService } from '../../services/CepService';
+import { isValidCpf } from '../../utils/isValidCpf';
+import { Patient } from '../../types/patient';
 
 const patientSchema = z.object({
   name: z.string().min(1, 'Nome completo é obrigatório'),
   birthDate: z.string().min(1, 'Data de nascimento é obrigatória.'),
-  cpf: z.string().min(1, 'CPF é obrigatório.'),
+  cpf: z
+    .string()
+    .min(1, 'CPF é obrigatório.')
+    .refine(isValidCpf, { message: 'CPF inválido.' }),
   cellPhone: z.string().min(1, 'Telefone é obrigatório.'),
   email: z
     .string()
     .email({ message: 'Email inválido.' })
     .min(1, 'Email é obrigatório.'),
-  cep: z.string().nullable(),
-  street: z.string().nullable(),
-  city: z.string().nullable(),
-  state: z.string().nullable(),
-  allergy: z.string().nullable(),
-  medicalHistory: z.string().nullable(),
-  guardianCpf: z.string().nullable(),
+  cep: z.string().nullish(),
+  street: z.string().nullish(),
+  city: z.string().nullish(),
+  state: z.string().nullish(),
+  allergy: z.string().nullish(),
+  medicalHistory: z.string().nullish(),
+  guardianCpf: z.string().nullish(),
 });
 
 type PatientFormValues = z.infer<typeof patientSchema>;
@@ -47,20 +50,17 @@ const emptyPatient = {
   medicalHistory: '',
 };
 
-export default function usePatientForm({
-  initialData,
-  onSubmit,
-}: UsePatientFormProps) {
+export function usePatientForm({ initialData, onSubmit }: UsePatientFormProps) {
   const {
     control,
     handleSubmit,
     watch,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<PatientFormValues>({
     defaultValues: {
       ...emptyPatient,
-      ...initialData,
     },
     resolver: zodResolver(patientSchema),
   });
@@ -68,6 +68,20 @@ export default function usePatientForm({
   const watchBirthDate = watch('birthDate');
 
   const watchCep = watch('cep');
+
+  useEffect(() => {
+    const sanitizedData = {
+      ...initialData,
+      cep: initialData?.cep || '',
+      street: initialData?.street || '',
+      city: initialData?.city || '',
+      state: initialData?.state || '',
+      allergy: initialData?.allergy || '',
+      guardianCpf: initialData?.guardianCpf || '',
+      medicalHistory: initialData?.medicalHistory || '',
+    };
+    reset({ ...emptyPatient, ...sanitizedData });
+  }, [initialData, reset]);
 
   const fetchAddressData = useCallback(
     (cep: string) => {
@@ -98,7 +112,7 @@ export default function usePatientForm({
       cep: data.cep?.replace(/\D/g, ''),
       guardianCpf: data.guardianCpf?.replace(/\D/g, ''),
     };
-    onSubmit(formatData);
+    onSubmit(formatData as Patient);
   }
 
   function handleCepBlur() {
@@ -111,9 +125,9 @@ export default function usePatientForm({
   return {
     control,
     handleSubmit,
+    setValue,
     errors,
     watchBirthDate,
-    isMinor,
     handleFormSubmit,
     handleCepBlur,
   };

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { useDrawerContext } from '../contexts/drawerContext';
+import { Event, LocalHospital, MenuBook, Person } from '@mui/icons-material';
 import {
   Box,
   Divider,
@@ -10,6 +10,8 @@ import {
 } from '@mui/material';
 
 import { NavItem } from './NavItem';
+
+import { useDrawerContext } from '../contexts/drawerContext';
 
 interface NavDrawerProps {
   children: ReactNode;
@@ -50,15 +52,37 @@ export function NavDrawer({ children }: NavDrawerProps) {
 
           <Box flex={1}>
             <List component="nav">
-              <NavItem name="Pacientes" icon="person" path="/admin/patients" />
-              <NavItem name="Médicos" icon="person" path="/admin/doctors" />
-              <NavItem name="Consultas" icon="person" path="/admin/consults" />
-              <NavItem name="Historico" icon="person" path="/admin/history" />
+              <NavItem
+                name="Pacientes"
+                icon={<Person />}
+                path="/admin/patients"
+              />
+              <NavItem
+                name="Médicos"
+                icon={<LocalHospital />}
+                path="/admin/doctors"
+              />
+              <NavItem
+                name="Consultas"
+                icon={<Event />}
+                path="/admin/consults"
+              />
+              <NavItem
+                name="Historico"
+                icon={<MenuBook />}
+                path="/admin/history"
+              />
             </List>
           </Box>
         </Box>
       </Drawer>
-      <Box>{children}</Box>
+      <Box
+        height="100vh"
+        marginLeft={smDown ? 0 : theme.spacing(28)}
+        padding={theme.spacing(2)}
+      >
+        {children}
+      </Box>
     </>
   );
 }

@@ -10,14 +10,16 @@ interface DoctorFormProps {
   isModalOpen: boolean;
   initialData?: Doctor;
   isLoading: boolean;
+  isEditForm: boolean;
   handleCloseModal: () => void;
-  onSubmit: (data: Doctor) => Promise<void>;
+  onSubmit: (data: Doctor) => void;
 }
 
 export function DoctorForm({
   isModalOpen,
   initialData,
   isLoading,
+  isEditForm,
   handleCloseModal,
   onSubmit,
 }: DoctorFormProps) {
@@ -81,7 +83,7 @@ export function DoctorForm({
             color="primary"
             loading={isLoading}
           >
-            Enviar
+            {isEditForm ? 'Salvar' : 'Enviar'}
           </Button>
         </Grid>
       </Grid>

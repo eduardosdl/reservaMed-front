@@ -6,13 +6,11 @@ import { APIError } from '../../../errors/ApiError';
 
 export function useDoctor() {
   const [doctors, setDoctors] = useState<Doctor[]>();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingDoctors, setLoadingDoctor] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditForm, setIsEditForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [doctorCrmToEdit, setDoctorCrmToEdit] = useState<string>();
-  const [formInitialData, setFormInitialData] = useState<Doctor | undefined>(
-    undefined,
-  );
+  const [formData, setFormData] = useState<Doctor | undefined>(undefined);
 
   async function loadDoctors() {
     try {
@@ -33,13 +31,14 @@ export function useDoctor() {
   }, []);
 
   function handleOpenCreateModal() {
-    setFormInitialData(undefined);
+    setFormData(undefined);
+    setIsEditForm(false);
     setIsModalOpen(true);
   }
 
   function handleOpenEditModal(data: Doctor) {
-    setDoctorCrmToEdit(data.crm);
-    setFormInitialData(data);
+    setFormData(data);
+    setIsEditForm(true);
     setIsModalOpen(true);
   }
 
@@ -47,10 +46,10 @@ export function useDoctor() {
     setIsModalOpen(false);
   }
 
-  async function handleSubmit(data: Doctor) {
+  async function handleSubmit(data: Omit<Doctor, 'id'>) {
     try {
-      if (doctorCrmToEdit) {
-        await DoctorService.getInstance().updateDoctor(doctorCrmToEdit, data);
+      if (isEditForm) {
+        await DoctorService.getInstance().updateDoctor(data.crm, data);
         toast.success('Médico atualizado com sucesso');
       } else {
         await DoctorService.getInstance().createDoctor(data);
@@ -81,10 +80,11 @@ export function useDoctor() {
 
   return {
     doctors,
-    isModalOpen,
     loadingDoctors,
+    isModalOpen,
+    isEditForm,
+    formData,
     isSubmitting,
-    formInitialData,
     handleOpenCreateModal,
     handleOpenEditModal,
     handleCloseModal,

@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 
 import Button from '../../componentsOld/Button';
 import Toast from '../../componentsOld/Toast';
-import Consult from '../../types/consult';
+import Consult from '../../types/consult/consult';
 import ConsultService from '../../services/ConsultService';
 import TableConsult from '../../componentsOld/TableConsult';
 import { useNavigate } from 'react-router-dom';

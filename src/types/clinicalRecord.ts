@@ -1,4 +1,4 @@
-export default interface ClinicalRecord {
+export interface ClinicalRecord {
   diagnostic: string;
   prescription: string;
 }

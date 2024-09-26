@@ -1,10 +1,12 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import Consult from '../types/consult';
-import CreateConsult from '../types/createConsult';
-import ClinicalRecord from '../types/clinicalRecord';
-import Prescription from '../types/prescription';
+import { Consult } from '../types/consult/consult';
+import { ConsultRequest } from '../types/consult/consultRequest';
+import { ClinicalRecord } from '../types/clinicalRecord';
+import { Prescription } from '../types/prescription';
+import { APIError } from '../errors/ApiError';
 
-class ConsultService {
+export class ConsultService {
+  private static instance: ConsultService;
   private apiClient: AxiosInstance;
 
   constructor() {
@@ -16,16 +18,43 @@ class ConsultService {
     });
   }
 
+  public static getInstance(): ConsultService {
+    if (!ConsultService.instance) {
+      ConsultService.instance = new ConsultService();
+    }
+    return ConsultService.instance;
+  }
+
   public async getAllConsults(): Promise<Consult[]> {
-    const response: AxiosResponse<Consult[]> =
-      await this.apiClient.get('/consults');
-    return response.data;
+    try {
+      const response: AxiosResponse<Consult[]> =
+        await this.apiClient.get('/consults');
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar consultas: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar consultas, tente novamente mais tarde',
+      );
+    }
   }
 
   public async getHistoryConsults(): Promise<Consult[]> {
-    const response: AxiosResponse<Consult[]> =
-      await this.apiClient.get('/historyConsult');
-    return response.data;
+    try {
+      const response: AxiosResponse<Consult[]> =
+        await this.apiClient.get('/historyConsult');
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar o historico de consultas: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar o historico de consultas, tente novamente mais tarde',
+      );
+    }
   }
 
   public async getPrescription(consultId: number): Promise<Prescription> {
@@ -37,9 +66,9 @@ class ConsultService {
     } catch (error) {
       console.log(`Houve um erro ao criar consultas: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao buscar consultas, tente novamente mais tarde',
       );
     }
@@ -54,15 +83,15 @@ class ConsultService {
     } catch (error) {
       console.log(`Houve um erro ao criar consultas: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao buscar consultas, tente novamente mais tarde',
       );
     }
   }
 
-  public async createConsult(consult: CreateConsult): Promise<Consult> {
+  public async createConsult(consult: ConsultRequest): Promise<Consult> {
     try {
       const response: AxiosResponse<Consult> = await this.apiClient.post(
         '/consults',
@@ -72,9 +101,9 @@ class ConsultService {
     } catch (error) {
       console.log(`Houve um erro ao criar consultas: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao criar consultas, tente novamente mais tarde',
       );
     }
@@ -93,9 +122,9 @@ class ConsultService {
     } catch (error) {
       console.log(`Houve um erro ao criar consultas: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao criar consultas, tente novamente mais tarde',
       );
     }
@@ -103,7 +132,7 @@ class ConsultService {
 
   public async updateConsult(
     consultId: number,
-    consultData: CreateConsult,
+    consultData: ConsultRequest,
   ): Promise<Consult> {
     try {
       const response: AxiosResponse<Consult> = await this.apiClient.put(
@@ -114,9 +143,9 @@ class ConsultService {
     } catch (error) {
       console.log(`Houve um erro ao criar consultas: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao criar consultas, tente novamente mais tarde',
       );
     }
@@ -130,12 +159,11 @@ class ConsultService {
     } catch (error) {
       console.log(`Houve um erro ao criar consultas: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao criar consultas, tente novamente mais tarde',
       );
     }
   }
 }
-export default new ConsultService();

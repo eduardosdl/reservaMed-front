@@ -1,10 +1,9 @@
-import ConsultType from './consultType';
-import Doctor from './doctor';
-import Patient from './patient';
+import { ConsultType } from './consultType';
+import { Doctor } from '../doctor';
+import { Patient } from '../patient';
 
-export default interface Consult {
+export interface HistoryConsult {
   id: number;
-  id_consult?: number;
   doctor: Doctor;
   patient: Patient;
   type_consult: ConsultType;

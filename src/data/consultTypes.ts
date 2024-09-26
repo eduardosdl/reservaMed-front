@@ -1,4 +1,4 @@
-const consultTypes = [
+export const consultTypes = [
   { value: 'ROUTINE_CHECKUP', label: 'Consulta de Rotina/Check-up' },
   { value: 'URGENT_CARE', label: 'Consulta de Urgência/Emergência' },
   { value: 'FOLLOW_UP', label: 'Consulta de Seguimento' },
@@ -10,5 +10,3 @@ const consultTypes = [
   { value: 'GERIATRIC', label: 'Consulta Geriátrica' },
   { value: 'TELEMEDICINE', label: 'Consulta de Telemedicina' },
 ];
-
-export default consultTypes;

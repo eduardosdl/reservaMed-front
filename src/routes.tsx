@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { Admin } from './pages/Admin';
 import { Patient } from './pages/Admin/Patient';
 import { Doctor } from './pages/Admin/Doctor';
+import { Consult } from './pages/Admin/Consult';
 
 export const routes = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ export const routes = createBrowserRouter([
       { path: '', element: <Navigate to="patients" replace /> },
       { path: 'patients', element: <Patient /> },
       { path: 'doctors', element: <Doctor /> },
+      { path: 'consults', element: <Consult /> },
     ],
   },
 ]);

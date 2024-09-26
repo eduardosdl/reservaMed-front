@@ -1,21 +1,23 @@
 import { GridColDef } from '@mui/x-data-grid';
-import formatCpf from '../../utils/formatCpf';
 import { Box, Chip } from '@mui/material';
-import Button from '../Button';
-import Consult from '../../types/consult/consult';
+
+import { Button } from '../../../components/Button';
+
+import { formatCpf } from '../../../utils/formatCpf';
+import { Consult } from '../../../types/consult/consult';
 
 interface createConsultColumsProps {
-  onCompleteConsult: (id: number) => void;
-  onUpdateConsult: (data: Consult) => void;
-  onCancelConsult: (id: number) => void;
-  onShowPrecription: (id: number) => void;
+  handleCompleteConsult: (id: number) => void;
+  handleUpdateConsult: (data: Consult) => void;
+  handleCancelConsult: (id: number) => void;
+  handleShowPrecription: (id: number) => void;
 }
 
-export default function createConsultColumns({
-  onCompleteConsult,
-  onUpdateConsult,
-  onCancelConsult,
-  onShowPrecription,
+export function consultColumns({
+  handleCompleteConsult,
+  handleUpdateConsult,
+  handleCancelConsult,
+  handleShowPrecription,
 }: createConsultColumsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -68,16 +70,19 @@ export default function createConsultColumns({
             return (
               <Box>
                 <Button
-                  onClick={() => onCompleteConsult(consultId)}
+                  onClick={() => handleCompleteConsult(consultId)}
                   color="success"
                 >
                   Completar
                 </Button>
-                <Button sx={{ mx: 1 }} onClick={() => onUpdateConsult(consult)}>
+                <Button
+                  sx={{ mx: 1 }}
+                  onClick={() => handleUpdateConsult(consult)}
+                >
                   Alterar
                 </Button>
                 <Button
-                  onClick={() => onCancelConsult(consultId)}
+                  onClick={() => handleCancelConsult(consultId)}
                   color="error"
                 >
                   Cancelar
@@ -90,7 +95,7 @@ export default function createConsultColumns({
             return (
               <Button
                 color="secondary"
-                onClick={() => onShowPrecription(consultId)}
+                onClick={() => handleShowPrecription(consultId)}
               >
                 Diagnostico
               </Button>

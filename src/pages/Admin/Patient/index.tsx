@@ -29,11 +29,11 @@ export function Patient() {
     >
       <PatientForm
         isModalOpen={isModalOpen}
-        handleCloseModal={handleCloseModal}
-        isLoading={isSubmitting}
-        onSubmit={handleSubmit}
         initialData={formData}
+        isLoading={isSubmitting}
         isEditForm={isEditFrom}
+        handleCloseModal={handleCloseModal}
+        onSubmit={handleSubmit}
       />
 
       <DataGrid

@@ -1,4 +1,4 @@
-enum ConsultType {
+export enum ConsultType {
   ROUTINE_CHECKUP = 'ROUTINE_CHECKUP',
   URGENT_CARE = 'URGENT_CARE',
   FOLLOW_UP = 'FOLLOW_UP',
@@ -10,5 +10,3 @@ enum ConsultType {
   GERIATRIC = 'GERIATRIC',
   TELEMEDICINE = 'TELEMEDICINE',
 }
-
-export default ConsultType;

@@ -1,36 +1,33 @@
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-
-import { DoctorColumns } from './DoctorColumns';
 import { BaseDashboard } from '../../../components/BaseDashboard';
-import { useDoctor } from './useDoctor';
-import { DoctorForm } from '../../../components/DoctorForm';
+import { ConsultForm } from '../../../components/ConsultForm';
 
-export function Doctor() {
+import { useConsult } from './useConsult';
+import { consultColumns } from './ConsultColumns';
+
+export function Consult() {
   const {
-    doctors,
-    loadingDoctors,
+    consults,
+    loadingConsults,
     isModalOpen,
     isEditForm,
     formData,
-    isSubmitting,
     handleOpenCreateModal,
-    handleOpenEditModal,
     handleCloseModal,
-    handleSubmit,
-    handleDeleteDoctor,
-  } = useDoctor();
-
+    handleCompleteConsult,
+    handleUpdateConsult,
+    handleCancelConsult,
+    handleShowPrecription,
+  } = useConsult();
   return (
     <BaseDashboard
-      title="Médicos"
-      buttonLabel="Novo Médico"
+      title="Consultas"
+      buttonLabel="Nova Consulta"
       handleOpenCreateModal={handleOpenCreateModal}
     >
-      <DoctorForm
+      <ConsultForm
         isModalOpen={isModalOpen}
         handleCloseModal={handleCloseModal}
-        onSubmit={handleSubmit}
-        isLoading={isSubmitting}
         isEditForm={isEditForm}
         initialData={formData}
       />
@@ -39,11 +36,13 @@ export function Doctor() {
         disableColumnFilter
         disableColumnSelector
         disableDensitySelector
-        rows={doctors}
-        loading={loadingDoctors}
-        columns={DoctorColumns({
-          handleOpenEditModal,
-          handleDeleteDoctor,
+        rows={consults}
+        loading={loadingConsults}
+        columns={consultColumns({
+          handleCompleteConsult,
+          handleUpdateConsult,
+          handleCancelConsult,
+          handleShowPrecription,
         })}
         slots={{ toolbar: GridToolbar }}
         slotProps={{

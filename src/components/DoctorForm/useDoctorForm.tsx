@@ -19,7 +19,7 @@ type DoctorFormValues = z.infer<typeof doctorSchema>;
 
 interface UseDoctorFormProps {
   initialData?: Doctor;
-  onSubmit: (data: Doctor) => Promise<void>;
+  onSubmit: (data: Doctor) => void;
 }
 
 const emptyDoctor = {
@@ -53,7 +53,7 @@ export function useDoctorForm({ initialData, onSubmit }: UseDoctorFormProps) {
       ...data,
       cellPhone: data.cellPhone.replace(/\D/g, ''),
     };
-    onSubmit(formatData);
+    onSubmit(formatData as Doctor);
   }
 
   function handlePhoneChange(value: string) {
@@ -62,8 +62,8 @@ export function useDoctorForm({ initialData, onSubmit }: UseDoctorFormProps) {
 
   return {
     control,
-    handleSubmit,
     errors,
+    handleSubmit,
     handleFormSubmit,
     handlePhoneChange,
   };

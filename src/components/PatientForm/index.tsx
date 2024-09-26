@@ -25,6 +25,7 @@ export function PatientForm({
   isModalOpen,
   initialData,
   isLoading,
+  isEditForm,
   handleCloseModal,
   onSubmit,
 }: PatientFormProps) {
@@ -151,7 +152,7 @@ export function PatientForm({
             color="primary"
             loading={isLoading}
           >
-            Enviar
+            {isEditForm ? 'Salvar' : 'Enviar'}
           </Button>
         </Grid>
       </Grid>

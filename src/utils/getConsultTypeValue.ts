@@ -1,5 +1,5 @@
 import consultTypes from '../data/consultTypes';
-import ConsultType from '../types/consultType';
+import ConsultType from '../types/consult/consultType';
 
 export default function getConsultTypeValue(
   label: string,

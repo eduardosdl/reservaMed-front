@@ -1,5 +1,5 @@
 import { DataGrid } from '@mui/x-data-grid';
-import Consult from '../../types/consult';
+import Consult from '../../types/consult/consult';
 import createConsultColumns from './DefColumns';
 import { Box, Modal, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -148,7 +148,7 @@ export default function TableConsult({
         </Box>
       </Modal>
       <DataGrid
-        getRowId={(row) => row.id_consult || row.id}
+        getRowId={row => row.id_consult || row.id}
         rows={consultsData}
         columns={createConsultColumns({
           onCompleteConsult: id => {

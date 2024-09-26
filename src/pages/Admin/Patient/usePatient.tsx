@@ -10,8 +10,8 @@ export function usePatient() {
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFrom, setIsEditForm] = useState(false);
-  const [formData, setFormData] = useState<Patient | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<Patient | undefined>();
 
   async function loadPatients() {
     try {

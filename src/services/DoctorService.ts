@@ -38,7 +38,7 @@ export class DoctorService {
     }
   }
 
-  public async createDoctor(doctor: Doctor): Promise<Doctor> {
+  public async createDoctor(doctor: Omit<Doctor, 'id'>): Promise<Doctor> {
     try {
       const response: AxiosResponse<Doctor> = await this.apiClient.post(
         '/doctors',
@@ -56,7 +56,7 @@ export class DoctorService {
     }
   }
 
-  public async updateDoctor(crm: string, doctor: Doctor): Promise<Doctor> {
+  public async updateDoctor(crm: string, doctor: Omit<Doctor, 'id'>): Promise<Doctor> {
     try {
       const response: AxiosResponse<Doctor> = await this.apiClient.put(
         `/doctors/${crm}`,

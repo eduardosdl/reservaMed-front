@@ -1,7 +1,7 @@
 import { Container, TextField } from '@mui/material';
 import Button from '../componentsOld/Button';
 import TableConsult from '../componentsOld/TableConsult';
-import Consult from '../types/consult';
+import Consult from '../types/consult/consult';
 import { useState } from 'react';
 import ConsultService from '../services/ConsultService';
 import Toast from '../componentsOld/Toast';

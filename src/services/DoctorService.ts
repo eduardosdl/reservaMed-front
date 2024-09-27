@@ -56,7 +56,10 @@ export class DoctorService {
     }
   }
 
-  public async updateDoctor(crm: string, doctor: Omit<Doctor, 'id'>): Promise<Doctor> {
+  public async updateDoctor(
+    crm: string,
+    doctor: Omit<Doctor, 'id'>,
+  ): Promise<Doctor> {
     try {
       const response: AxiosResponse<Doctor> = await this.apiClient.put(
         `/doctors/${crm}`,

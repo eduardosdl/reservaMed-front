@@ -8,14 +8,14 @@ import { Consult } from '../../../types/consult/consult';
 
 interface createConsultColumsProps {
   handleCompleteConsult: (id: number) => void;
-  handleUpdateConsult: (data: Consult) => void;
+  handleOpenEditModal: (data: Consult) => void;
   handleCancelConsult: (id: number) => void;
   handleShowPrecription: (id: number) => void;
 }
 
 export function consultColumns({
   handleCompleteConsult,
-  handleUpdateConsult,
+  handleOpenEditModal,
   handleCancelConsult,
   handleShowPrecription,
 }: createConsultColumsProps): GridColDef[] {
@@ -29,13 +29,13 @@ export function consultColumns({
     {
       field: 'patientCpf',
       headerName: 'CPF do paciente',
-      width: 200,
+      width: 150,
       renderCell: params => formatCpf(params.row.patient.cpf),
     },
     {
       field: 'date',
       headerName: 'Data da consulta',
-      width: 200,
+      width: 150,
       type: 'string',
       valueFormatter: value => {
         const date = new Date(value).toLocaleDateString('pt-BR');
@@ -45,6 +45,12 @@ export function consultColumns({
         });
         return `${date} - ${time}`;
       },
+    },
+    {
+      field: 'consultType',
+      headerName: 'Tipo da Consulta',
+      width: 200,
+      renderCell: params => params.row.type_consult,
     },
     {
       field: 'doctorName',
@@ -61,7 +67,7 @@ export function consultColumns({
     {
       field: 'id',
       headerName: 'Ações',
-      width: 350,
+      width: 300,
       renderCell: params => {
         const consult = params.row;
         const consultId = consult.id_consult || consult.id;
@@ -77,7 +83,7 @@ export function consultColumns({
                 </Button>
                 <Button
                   sx={{ mx: 1 }}
-                  onClick={() => handleUpdateConsult(consult)}
+                  onClick={() => handleOpenEditModal(consult)}
                 >
                   Alterar
                 </Button>

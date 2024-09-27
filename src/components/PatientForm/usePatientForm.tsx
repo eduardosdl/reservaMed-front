@@ -113,6 +113,7 @@ export function usePatientForm({ initialData, onSubmit }: UsePatientFormProps) {
       guardianCpf: data.guardianCpf?.replace(/\D/g, ''),
     };
     onSubmit(formatData as Patient);
+    reset();
   }
 
   function handleCepBlur() {
@@ -127,6 +128,7 @@ export function usePatientForm({ initialData, onSubmit }: UsePatientFormProps) {
     handleSubmit,
     setValue,
     errors,
+    reset,
     watchBirthDate,
     handleFormSubmit,
     handleCepBlur,

@@ -1,21 +1,23 @@
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { BaseDashboard } from '../../../components/BaseDashboard';
-import { ConsultForm } from '../../../components/ConsultForm';
 
 import { useConsult } from './useConsult';
 import { consultColumns } from './ConsultColumns';
+
+import { BaseDashboard } from '../../../components/BaseDashboard';
+import { ConsultForm } from '../../../components/ConsultForm';
 
 export function Consult() {
   const {
     consults,
     loadingConsults,
     isModalOpen,
-    isEditForm,
+    consultIdToEdit,
     formData,
+    loadConsults,
     handleOpenCreateModal,
+    handleOpenEditModal,
     handleCloseModal,
     handleCompleteConsult,
-    handleUpdateConsult,
     handleCancelConsult,
     handleShowPrecription,
   } = useConsult();
@@ -28,8 +30,9 @@ export function Consult() {
       <ConsultForm
         isModalOpen={isModalOpen}
         handleCloseModal={handleCloseModal}
-        isEditForm={isEditForm}
+        consultIdToEdit={consultIdToEdit}
         initialData={formData}
+        reloadData={loadConsults}
       />
 
       <DataGrid
@@ -40,7 +43,7 @@ export function Consult() {
         loading={loadingConsults}
         columns={consultColumns({
           handleCompleteConsult,
-          handleUpdateConsult,
+          handleOpenEditModal,
           handleCancelConsult,
           handleShowPrecription,
         })}

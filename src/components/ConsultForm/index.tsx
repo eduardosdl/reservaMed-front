@@ -13,15 +13,17 @@ import { ConsultRequest } from '../../types/consult/consultRequest';
 interface ConsultFormProps {
   isModalOpen: boolean;
   initialData?: ConsultRequest;
-  isEditForm: boolean;
+  consultIdToEdit?: number;
   handleCloseModal: () => void;
+  reloadData: () => void;
 }
 
 export function ConsultForm({
   isModalOpen,
   initialData,
-  isEditForm,
+  consultIdToEdit,
   handleCloseModal,
+  reloadData,
 }: ConsultFormProps) {
   const {
     doctors,
@@ -32,7 +34,9 @@ export function ConsultForm({
     handleFormSubmit,
   } = useConsultForm({
     initialData,
-    isEditForm,
+    consultIdToEdit,
+    handleCloseModal,
+    reloadData,
   });
 
   return (
@@ -71,6 +75,7 @@ export function ConsultForm({
         </Grid>
         <Grid item xs={12}>
           <FormInput
+            disabled={!!consultIdToEdit}
             name="cpf_patient"
             control={control}
             label="CPF do paciente"
@@ -88,6 +93,9 @@ export function ConsultForm({
             type="datetime-local"
             error={!!errors.date}
             errorMessage={errors.date?.message}
+            formatValue={value => {
+              return value.replace(/^(\d{4})\d*/, '$1');
+            }}
           />
         </Grid>
         <Grid item xs={12}>
@@ -121,7 +129,7 @@ export function ConsultForm({
             color="primary"
             loading={isSubmitting}
           >
-            {isEditForm ? 'Salvar' : 'Agendar'}
+            {consultIdToEdit ? 'Salvar' : 'Agendar'}
           </Button>
         </Grid>
       </Grid>

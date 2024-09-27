@@ -33,19 +33,27 @@ export function PatientForm({
     control,
     errors,
     watchBirthDate,
+    reset,
     handleSubmit,
     handleCepBlur,
     handleFormSubmit,
   } = usePatientForm({ initialData, onSubmit });
 
   return (
-    <ModalForm open={isModalOpen} onClose={handleCloseModal}>
+    <ModalForm
+      open={isModalOpen}
+      onClose={() => {
+        handleCloseModal();
+        reset();
+      }}
+    >
       <Grid
         container
         spacing={0}
         columnSpacing={1}
         component="form"
         onSubmit={handleSubmit(handleFormSubmit)}
+        autoComplete="off"
       >
         <Grid item xs={12}>
           <FormInput

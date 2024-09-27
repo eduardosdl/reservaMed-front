@@ -10,11 +10,19 @@ import { ConsultType } from '../../types/consult/consultType';
 import { Doctor } from '../../types/doctor';
 import { ConsultRequest } from '../../types/consult/consultRequest';
 import { APIError } from '../../errors/ApiError';
+import { ConsultService } from '../../services/ConsultService';
 
 const consultSchema = z.object({
   id_doctor: z.number().min(1, 'Selecione um médico'),
   cpf_patient: z.string().min(1, 'Informe um CPF'),
-  date: z.string().min(1, 'Data do agendamento é obrigatória'),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, 'Formato de data inválido')
+    .refine(value => {
+      const inputDate = new Date(value);
+      const currentDate = new Date();
+      return inputDate > currentDate;
+    }, 'A data deve ser posterior ao dia atual'),
   type: z.nativeEnum(ConsultType, {
     errorMap: () => ({ message: 'Selecione o tipo de consulta' }),
   }),
@@ -24,7 +32,9 @@ type ConsultFormValues = z.infer<typeof consultSchema>;
 
 interface UseConsultFormProps {
   initialData?: ConsultRequest;
-  isEditForm: boolean;
+  consultIdToEdit?: number;
+  handleCloseModal: () => void;
+  reloadData: () => void;
 }
 
 // defaultValues: {
@@ -45,7 +55,9 @@ const emptyConsult = {
 
 export function useConsultForm({
   initialData,
-  isEditForm,
+  consultIdToEdit,
+  handleCloseModal,
+  reloadData,
 }: UseConsultFormProps) {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,24 +99,52 @@ export function useConsultForm({
   }, [initialData, reset]);
 
   async function handleCreateConsult(data: ConsultRequest) {
-    console.log('Criar consulta');
-    console.log(data);
+    try {
+      const formatedData = {
+        ...data,
+        cpf_patient: data.cpf_patient.replace(/\D/g, ''),
+      };
+      setIsSubmitting(true);
+      await ConsultService.getInstance().createConsult(formatedData);
+      toast.success('Consulta agendada com sucesso');
+    } catch (error) {
+      if (error instanceof APIError) {
+        toast.error(error.message);
+      }
+    } finally {
+      setIsSubmitting(false);
+      handleCloseModal();
+      reloadData();
+    }
   }
 
-  async function handleUpdateConsult(data: ConsultRequest) {
-    console.log('Editar consulta');
-    console.log(data);
+  async function handleUpdateConsult(consultId: number, data: ConsultRequest) {
+    try {
+      const formatedData = {
+        ...data,
+        cpf_patient: data.cpf_patient.replace(/\D/g, ''),
+      };
+      setIsSubmitting(true);
+      await ConsultService.getInstance().updateConsult(consultId, formatedData);
+      toast.success('Consulta alterada com sucesso');
+    } catch (error) {
+      if (error instanceof APIError) {
+        toast.error(error.message);
+      }
+    } finally {
+      setIsSubmitting(false);
+      handleCloseModal();
+      reloadData();
+    }
   }
 
   function handleFormSubmit(data: ConsultRequest) {
-    setIsSubmitting(true);
-    if (isEditForm) {
-      handleUpdateConsult(data);
+    if (consultIdToEdit) {
+      handleUpdateConsult(consultIdToEdit, data);
       return;
     }
 
     handleCreateConsult(data);
-    setIsSubmitting(true);
   }
 
   return {

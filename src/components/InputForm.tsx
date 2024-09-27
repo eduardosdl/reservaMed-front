@@ -11,6 +11,7 @@ interface FormInputProps<T extends FieldValues> {
   maxLength?: number;
   type?: string;
   helpText?: string;
+  disabled?: boolean;
   formatValue?: (value: string) => string;
   onBlur?: () => void;
 }
@@ -24,6 +25,7 @@ export function FormInput<T extends FieldValues>({
   helpText,
   error = false,
   type = 'text',
+  disabled = false,
   formatValue,
   onBlur,
 }: FormInputProps<T>) {
@@ -39,6 +41,7 @@ export function FormInput<T extends FieldValues>({
             label={label}
             type={type}
             error={error}
+            disabled={disabled}
             onChange={e => {
               field.onChange(
                 formatValue ? formatValue(e.target.value) : e.target.value,

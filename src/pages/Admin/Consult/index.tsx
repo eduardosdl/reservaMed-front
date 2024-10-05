@@ -5,12 +5,15 @@ import { consultColumns } from './ConsultColumns';
 
 import { BaseDashboard } from '../../../components/BaseDashboard';
 import { ConsultForm } from '../../../components/ConsultForm';
+import { CompleteConsult } from '../../../components/CompleteConsult';
 
 export function Consult() {
   const {
     consults,
     loadingConsults,
-    isModalOpen,
+    isFormModalOpen,
+    isCompleteModalOpen,
+    consultIdToComplete,
     consultIdToEdit,
     formData,
     loadConsults,
@@ -28,10 +31,17 @@ export function Consult() {
       handleOpenCreateModal={handleOpenCreateModal}
     >
       <ConsultForm
-        isModalOpen={isModalOpen}
+        isModalOpen={isFormModalOpen}
         handleCloseModal={handleCloseModal}
         consultIdToEdit={consultIdToEdit}
         initialData={formData}
+        reloadData={loadConsults}
+      />
+
+      <CompleteConsult
+        consultId={consultIdToComplete}
+        open={isCompleteModalOpen}
+        onClose={handleCloseModal}
         reloadData={loadConsults}
       />
 

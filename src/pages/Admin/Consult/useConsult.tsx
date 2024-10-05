@@ -10,10 +10,10 @@ import { APIError } from '../../../errors/ApiError';
 export function useConsult() {
   const [consults, setConsults] = useState<Consult[]>([]);
   const [loadingConsults, setLoadingConsults] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [consultIdToEdit, setConsultIdToEdit] = useState<number | undefined>(
-    10,
-  );
+  const [isFormModalOpen, seIsFormModalOpen] = useState(false);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [consultIdToComplete, setConsultIdToComplete] = useState(0);
+  const [consultIdToEdit, setConsultIdToEdit] = useState<number | undefined>();
   const [formData, setFormData] = useState<ConsultRequest | undefined>();
 
   async function loadConsults() {
@@ -37,7 +37,7 @@ export function useConsult() {
   function handleOpenCreateModal() {
     setConsultIdToEdit(undefined);
     setFormData(undefined);
-    setIsModalOpen(true);
+    seIsFormModalOpen(true);
   }
 
   function handleOpenEditModal(data: Consult) {
@@ -50,15 +50,17 @@ export function useConsult() {
 
     setConsultIdToEdit(data.id);
     setFormData(requestData);
-    setIsModalOpen(true);
+    seIsFormModalOpen(true);
   }
 
   function handleCloseModal() {
-    setIsModalOpen(false);
+    seIsFormModalOpen(false);
+    setIsCompleteModalOpen(false);
   }
 
   function handleCompleteConsult(id: number) {
-    console.log(id);
+    setIsCompleteModalOpen(true);
+    setConsultIdToComplete(id);
   }
   function handleCancelConsult(id: number) {
     console.log(id);
@@ -70,7 +72,9 @@ export function useConsult() {
   return {
     consults,
     loadingConsults,
-    isModalOpen,
+    isFormModalOpen,
+    isCompleteModalOpen,
+    consultIdToComplete,
     consultIdToEdit,
     formData,
     loadConsults,

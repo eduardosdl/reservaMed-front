@@ -107,14 +107,14 @@ export function useConsultForm({
       setIsSubmitting(true);
       await ConsultService.getInstance().createConsult(formatedData);
       toast.success('Consulta agendada com sucesso');
+      handleCloseModal();
+      reloadData();
     } catch (error) {
       if (error instanceof APIError) {
         toast.error(error.message);
       }
     } finally {
       setIsSubmitting(false);
-      handleCloseModal();
-      reloadData();
     }
   }
 

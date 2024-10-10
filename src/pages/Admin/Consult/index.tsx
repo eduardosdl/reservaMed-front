@@ -6,6 +6,7 @@ import { consultColumns } from './ConsultColumns';
 import { BaseDashboard } from '../../../components/BaseDashboard';
 import { ConsultForm } from '../../../components/ConsultForm';
 import { CompleteConsult } from '../../../components/CompleteConsult';
+import { CancelConsult } from '../../../components/CancelConsult';
 
 export function Consult() {
   const {
@@ -14,6 +15,9 @@ export function Consult() {
     isFormModalOpen,
     isCompleteModalOpen,
     consultIdToComplete,
+    isCancelModalOpen,
+    consultIdToCancel,
+    isBefore24h,
     consultIdToEdit,
     formData,
     loadConsults,
@@ -43,6 +47,14 @@ export function Consult() {
         open={isCompleteModalOpen}
         onClose={handleCloseModal}
         reloadData={loadConsults}
+      />
+
+      <CancelConsult
+        consultId={consultIdToCancel}
+        open={isCancelModalOpen}
+        onClose={handleCloseModal}
+        reloadData={loadConsults}
+        isOlderThen24h={isBefore24h}
       />
 
       <DataGrid

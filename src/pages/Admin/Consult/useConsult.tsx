@@ -6,13 +6,17 @@ import { getConsultTypeValue } from '../../../utils/getConsultTypeValue';
 import { Consult } from '../../../types/consult/consult';
 import { ConsultRequest } from '../../../types/consult/consultRequest';
 import { APIError } from '../../../errors/ApiError';
+import { isOlderThan24h } from '../../../utils/isBefore24h';
 
 export function useConsult() {
   const [consults, setConsults] = useState<Consult[]>([]);
   const [loadingConsults, setLoadingConsults] = useState(true);
   const [isFormModalOpen, seIsFormModalOpen] = useState(false);
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [isBefore24h, setIsBefore24h] = useState(false);
   const [consultIdToComplete, setConsultIdToComplete] = useState(0);
+  const [consultIdToCancel, setConsultIdToCancel] = useState(0);
   const [consultIdToEdit, setConsultIdToEdit] = useState<number | undefined>();
   const [formData, setFormData] = useState<ConsultRequest | undefined>();
 
@@ -56,14 +60,19 @@ export function useConsult() {
   function handleCloseModal() {
     seIsFormModalOpen(false);
     setIsCompleteModalOpen(false);
+    setIsCancelModalOpen(false);
   }
 
   function handleCompleteConsult(id: number) {
     setIsCompleteModalOpen(true);
     setConsultIdToComplete(id);
   }
-  function handleCancelConsult(id: number) {
-    console.log(id);
+  async function handleCancelConsult(id: number) {
+    const consultSelected = consults.find(consult => consult.id == id);
+    setIsBefore24h(isOlderThan24h(consultSelected?.date || ''));
+
+    setIsCancelModalOpen(true);
+    setConsultIdToCancel(id);
   }
   function handleShowPrecription(id: number) {
     console.log(id);
@@ -75,6 +84,9 @@ export function useConsult() {
     isFormModalOpen,
     isCompleteModalOpen,
     consultIdToComplete,
+    isCancelModalOpen,
+    isBefore24h,
+    consultIdToCancel,
     consultIdToEdit,
     formData,
     loadConsults,

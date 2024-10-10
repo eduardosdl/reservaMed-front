@@ -1,21 +1,16 @@
 import { GridColDef } from '@mui/x-data-grid';
-import { Box } from '@mui/material';
+import { Chip } from '@mui/material';
 
 import { Button } from '../../../components/Button';
 
 import { formatCpf } from '../../../utils/formatCpf';
-import { Consult } from '../../../types/consult/consult';
 
 interface createConsultColumsProps {
-  handleCompleteConsult: (id: number) => void;
-  handleOpenEditModal: (data: Consult) => void;
-  handleCancelConsult: (id: number) => void;
+  handleShowPrecription: (id: number) => void;
 }
 
 export function consultColumns({
-  handleCompleteConsult,
-  handleOpenEditModal,
-  handleCancelConsult,
+  handleShowPrecription,
 }: createConsultColumsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -45,12 +40,6 @@ export function consultColumns({
       },
     },
     {
-      field: 'consultType',
-      headerName: 'Tipo da Consulta',
-      width: 200,
-      renderCell: params => params.row.type_consult,
-    },
-    {
       field: 'doctorName',
       headerName: 'Nome do médico',
       width: 200,
@@ -69,31 +58,20 @@ export function consultColumns({
       renderCell: params => {
         const consult = params.row;
         const consultId = consult.id_consult || consult.id;
-        if (consult.status == 'A') {
-          return (
-            <Box>
+        switch (consult.status) {
+          case 'C':
+            return <Chip color="error" label="Cancelada" />;
+          case 'P':
+            return (
               <Button
-                onClick={() => handleCompleteConsult(consultId)}
-                color="success"
+                color="secondary"
+                onClick={() => handleShowPrecription(consultId)}
               >
-                Completar
+                Diagnostico
               </Button>
-              <Button
-                sx={{ mx: 1 }}
-                onClick={() => handleOpenEditModal(consult)}
-              >
-                Alterar
-              </Button>
-              <Button
-                onClick={() => handleCancelConsult(consultId)}
-                color="error"
-              >
-                Cancelar
-              </Button>
-            </Box>
-          );
-        } else {
-          return null;
+            );
+          default:
+            return null;
         }
       },
     },

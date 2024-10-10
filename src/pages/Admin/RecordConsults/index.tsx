@@ -1,32 +1,25 @@
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
-import { useConsult } from './useConsult';
+import { useRecordConsult } from './useRecordConsult';
 import { consultColumns } from './ConsultColumns';
 
 import { BaseDashboard } from '../../../components/BaseDashboard';
 import { ConsultForm } from '../../../components/ConsultForm';
-import { CompleteConsult } from '../../../components/CompleteConsult';
-import { CancelConsult } from '../../../components/CancelConsult';
+import { PrescriptionModal } from '../../../components/PrescriptionModal';
 
-export function Consult() {
+export function RecordConsults() {
   const {
     consults,
     loadingConsults,
     isFormModalOpen,
-    isCompleteModalOpen,
-    consultIdToComplete,
-    isCancelModalOpen,
-    consultIdToCancel,
-    isBefore24h,
-    consultIdToEdit,
+    prescriptionData,
+    isPrescriptionModalOpen,
     formData,
     loadConsults,
     handleOpenCreateModal,
-    handleOpenEditModal,
     handleCloseModal,
-    handleCompleteConsult,
-    handleCancelConsult,
-  } = useConsult();
+    handleShowPrecription,
+  } = useRecordConsult();
   return (
     <BaseDashboard
       title="Consultas"
@@ -36,24 +29,15 @@ export function Consult() {
       <ConsultForm
         isModalOpen={isFormModalOpen}
         handleCloseModal={handleCloseModal}
-        consultIdToEdit={consultIdToEdit}
+        consultIdToEdit={undefined}
         initialData={formData}
         reloadData={loadConsults}
       />
 
-      <CompleteConsult
-        consultId={consultIdToComplete}
-        open={isCompleteModalOpen}
+      <PrescriptionModal
+        data={prescriptionData}
+        modalOpen={isPrescriptionModalOpen}
         onClose={handleCloseModal}
-        reloadData={loadConsults}
-      />
-
-      <CancelConsult
-        consultId={consultIdToCancel}
-        open={isCancelModalOpen}
-        onClose={handleCloseModal}
-        reloadData={loadConsults}
-        isOlderThen24h={isBefore24h}
       />
 
       <DataGrid
@@ -63,9 +47,7 @@ export function Consult() {
         rows={consults}
         loading={loadingConsults}
         columns={consultColumns({
-          handleCompleteConsult,
-          handleOpenEditModal,
-          handleCancelConsult,
+          handleShowPrecription,
         })}
         slots={{ toolbar: GridToolbar }}
         slotProps={{
@@ -73,6 +55,7 @@ export function Consult() {
             showQuickFilter: true,
           },
         }}
+        getRowId={value => value.id_consult}
       />
     </BaseDashboard>
   );

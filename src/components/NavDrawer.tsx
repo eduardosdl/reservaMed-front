@@ -70,7 +70,7 @@ export function NavDrawer({ children }: NavDrawerProps) {
               <NavItem
                 name="Historico"
                 icon={<MenuBook />}
-                path="/admin/history"
+                path="/admin/consults/record"
               />
             </List>
           </Box>

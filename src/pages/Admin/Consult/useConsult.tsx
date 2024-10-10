@@ -74,9 +74,6 @@ export function useConsult() {
     setIsCancelModalOpen(true);
     setConsultIdToCancel(id);
   }
-  function handleShowPrecription(id: number) {
-    console.log(id);
-  }
 
   return {
     consults,
@@ -95,6 +92,5 @@ export function useConsult() {
     handleCloseModal,
     handleCompleteConsult,
     handleCancelConsult,
-    handleShowPrecription,
   };
 }

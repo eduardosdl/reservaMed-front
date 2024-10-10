@@ -5,6 +5,7 @@ import { Admin } from './pages/Admin';
 import { Patient } from './pages/Admin/Patient';
 import { Doctor } from './pages/Admin/Doctor';
 import { Consult } from './pages/Admin/Consult';
+import { RecordConsults } from './pages/Admin/RecordConsults';
 
 export const routes = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export const routes = createBrowserRouter([
       { path: 'patients', element: <Patient /> },
       { path: 'doctors', element: <Doctor /> },
       { path: 'consults', element: <Consult /> },
+      { path: 'consults/record', element: <RecordConsults /> },
     ],
   },
 ]);

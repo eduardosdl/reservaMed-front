@@ -28,8 +28,8 @@ export function Home() {
         <Button sx={{ width: 1 }} onClick={() => navigate('/admin')}>
           Administrador
         </Button>
-        <Button sx={{ width: 1 }} onClick={() => navigate('/appointment')}>
-          Agendar consulta
+        <Button sx={{ width: 1 }} onClick={() => navigate('/doctors')}>
+          Médico
         </Button>
         <Button sx={{ width: 1 }} onClick={() => navigate('/consults')}>
           Visuaizar consultas

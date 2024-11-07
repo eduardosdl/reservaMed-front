@@ -51,7 +51,7 @@ export function usePatient() {
     try {
       setIsSubmitting(true);
       if (isEditFrom && formData) {
-        await PatientService.getInstance().updatePatient(formData.cpf, data);
+        await PatientService.getInstance().updatePatient(formData.id, data);
         toast.success('Paciente editado com sucesso');
       } else {
         await PatientService.getInstance().createPatient(data);

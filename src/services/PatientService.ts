@@ -57,12 +57,12 @@ export class PatientService {
   }
 
   public async updatePatient(
-    cpf: string,
+    id: number,
     patient: Omit<Patient, 'id'>,
   ): Promise<Patient> {
     try {
       const response: AxiosResponse<Patient> = await this.apiClient.put(
-        `/patients/${cpf}`,
+        `/patients/${id}`,
         patient,
       );
       return response.data;

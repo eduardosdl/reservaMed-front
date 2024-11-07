@@ -37,15 +37,6 @@ interface UseConsultFormProps {
   reloadData: () => void;
 }
 
-// defaultValues: {
-//   id_doctor: initialData?.doctor.id ?? 0,
-//   cpf_patient: initialData?.patient.cpf ?? '',
-//   date: initialData?.date ?? '',
-//   type:
-//     getConsultTypeValue(initialData?.type_consult || '') ??
-//     ConsultType.ROUTINE_CHECKUP,
-// },
-
 const emptyConsult = {
   id_doctor: 0,
   cpf_patient: '',
@@ -141,10 +132,12 @@ export function useConsultForm({
   function handleFormSubmit(data: ConsultRequest) {
     if (consultIdToEdit) {
       handleUpdateConsult(consultIdToEdit, data);
+      reset()
       return;
     }
 
     handleCreateConsult(data);
+    reset();
   }
 
   return {

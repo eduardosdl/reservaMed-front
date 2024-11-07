@@ -54,6 +54,7 @@ export function useDoctorForm({ initialData, onSubmit }: UseDoctorFormProps) {
       cellPhone: data.cellPhone.replace(/\D/g, ''),
     };
     onSubmit(formatData as Doctor);
+    reset()
   }
 
   function handlePhoneChange(value: string) {

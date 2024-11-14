@@ -1,4 +1,3 @@
 export interface ClinicalRecord {
-  diagnostic: string;
-  prescription: string;
+  description: string;
 }

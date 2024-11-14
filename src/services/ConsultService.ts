@@ -28,7 +28,7 @@ export class ConsultService {
   public async getAllConsults(): Promise<Consult[]> {
     try {
       const response: AxiosResponse<Consult[]> =
-        await this.apiClient.get('/consults');
+        await this.apiClient.get('/appointments');
       return response.data;
     } catch (error) {
       console.log(`Houve um erro ao buscar consultas: ${error}`);
@@ -77,7 +77,7 @@ export class ConsultService {
   public async getConsultsByCpf(cpf: string): Promise<Consult[]> {
     try {
       const response: AxiosResponse<Consult[]> = await this.apiClient.get(
-        `/consults/${cpf}`,
+        `/appointments/${cpf}`,
       );
       return response.data;
     } catch (error) {
@@ -112,13 +112,12 @@ export class ConsultService {
   public async completeConsult(
     consultId: number,
     clinicalRecord: ClinicalRecord,
-  ): Promise<Consult> {
+  ): Promise<void> {
     try {
-      const response: AxiosResponse<Consult> = await this.apiClient.put(
-        `/consults/complete/${consultId}`,
+      await this.apiClient.patch(
+        `/appointments/complete/${consultId}`,
         clinicalRecord,
       );
-      return response.data;
     } catch (error) {
       console.log(`Houve um erro ao criar consultas: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {

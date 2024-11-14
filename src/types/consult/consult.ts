@@ -4,7 +4,6 @@ import { Patient } from '../patient';
 
 export interface Consult {
   id: number;
-  id_consult: number;
   doctor: Doctor;
   patient: Patient;
   type_consult: ConsultType;
@@ -12,4 +11,5 @@ export interface Consult {
   dateCancellation?: string;
   reasonCancellation?: string;
   status: string;
+  description?: string;
 }

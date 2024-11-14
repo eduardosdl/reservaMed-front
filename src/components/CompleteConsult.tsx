@@ -1,4 +1,11 @@
-import { Box, Grid, Modal, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Modal,
+  TextField,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { FormInput } from './InputForm';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,13 +20,13 @@ import { APIError } from '../errors/ApiError';
 interface CompleteConsultProps {
   consultId: number;
   open: boolean;
+  patientName: string;
   onClose: () => void;
   reloadData: () => void;
 }
 
 const medicalRecordSchema = z.object({
-  diagnostic: z.string().min(1, 'Diagnostico é obrigatório'),
-  prescription: z.string().min(1, 'Prescrição é obrigatória'),
+  description: z.string().min(1, 'Descrição é obrigatória'),
 });
 
 type MedicalRecordFormValues = z.infer<typeof medicalRecordSchema>;
@@ -27,6 +34,7 @@ type MedicalRecordFormValues = z.infer<typeof medicalRecordSchema>;
 export function CompleteConsult({
   consultId,
   open,
+  patientName,
   onClose,
   reloadData,
 }: CompleteConsultProps) {
@@ -40,7 +48,7 @@ export function CompleteConsult({
     formState: { errors },
     reset,
   } = useForm<MedicalRecordFormValues>({
-    defaultValues: { diagnostic: '', prescription: '' },
+    defaultValues: { description: '' },
     resolver: zodResolver(medicalRecordSchema),
   });
 
@@ -90,21 +98,22 @@ export function CompleteConsult({
           autoComplete="off"
         >
           <Grid item xs={12}>
-            <FormInput
-              name="diagnostic"
-              control={control}
-              label="Diagnótico"
-              error={!!errors.diagnostic}
-              errorMessage={errors.diagnostic?.message}
+            <TextField
+            fullWidth
+              size="small"
+              label="Nome do paciente"
+              disabled={true}
+              value={patientName}
             />
           </Grid>
           <Grid item xs={12}>
             <FormInput
-              name="prescription"
+              name="description"
               control={control}
-              label="Prescrição"
-              error={!!errors.prescription}
-              errorMessage={errors.prescription?.message}
+              type="textarea"
+              label="Descrição"
+              error={!!errors.description}
+              errorMessage={errors.description?.message}
             />
           </Grid>
           <Grid item xs={12}>

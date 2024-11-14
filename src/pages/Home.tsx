@@ -1,5 +1,5 @@
 import { Card, Container } from '@mui/material';
-import Button from '../componentsOld/Button';
+import {Button} from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 
 export function Home() {

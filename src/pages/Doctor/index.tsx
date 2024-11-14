@@ -9,11 +9,19 @@ import { consultColumns } from './ConsultColumns';
 import { APIError } from '../../errors/ApiError';
 import { DoctorService } from '../../services/DoctorService';
 import { DoctorConsults } from '../../types/doctorConsult';
+import { CompleteConsult } from '../../components/CompleteConsult';
+import { MedicalConsultsRecord } from '../../components/MedicalConsultsRecord';
 
 export function Doctor() {
   const crm = useParams<{ doctorCrm: string }>();
   const [doctorConsults, setDoctorConsults] = useState<DoctorConsults>();
   const [loadingConsults, setLoadingConsults] = useState(true);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [consultIdToComplete, setConsultIdToComplete] = useState(0);
+  const [patientName, setPatientName] = useState('');
+  const [showMedicalConsultsRecord, setShowMedicalConsultsRecord] =
+    useState(false);
+  const [patientCpf, setPatientCpf] = useState('');
 
   async function loadConsults(doctorCrm: string) {
     try {
@@ -31,44 +39,91 @@ export function Doctor() {
   }
 
   useEffect(() => {
-    if (crm.doctorCrm) {
+    if (crm?.doctorCrm) {
       loadConsults(crm.doctorCrm);
     } else {
       toast.error('CRM não fornecido');
     }
-  }, [crm.doctorCrm]);
+  }, [crm]);
 
   return (
-    <Container maxWidth="md" sx={{ paddingTop: '48px'}}>
-      <Box sx={{ display: 'flex', gap: 4 }}>
-        <Box sx={{ marginBottom: 2 }} width="100%">
-          <Paper sx={{ padding: 2 }} elevation={3}>
-            <Typography gutterBottom variant="h6" component="p">Fila de espera: {doctorConsults?.pending}</Typography>
-          </Paper>
-        </Box>
-        <Box sx={{ marginBottom: 2 }} width="100%">
-          <Paper sx={{ padding: 2 }} elevation={3}>
-            <Typography gutterBottom variant="h6" component="p">Atendidos: {doctorConsults?.attended}</Typography>
-          </Paper>
-        </Box>
-      </Box>
-      <DataGrid
-        disableColumnFilter
-        disableColumnSelector
-        disableDensitySelector
-        rows={doctorConsults?.data}
-        loading={loadingConsults}
-        columns={consultColumns({
-          handleCompleteConsult: () => {},
-          handleOpenPatientRecord: () => {},
-        })}
-        slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
+    <>
+      <CompleteConsult
+        consultId={consultIdToComplete}
+        open={isCompleteModalOpen}
+        patientName={patientName}
+        onClose={() => setIsCompleteModalOpen(false)}
+        reloadData={() => crm?.doctorCrm && loadConsults(crm.doctorCrm)}
       />
-    </Container>
+      <MedicalConsultsRecord
+        isModalVisible={showMedicalConsultsRecord}
+        onClose={() => setShowMedicalConsultsRecord(false)}
+        doctorCrm={crm?.doctorCrm || ''}
+        patientCpf={patientCpf}
+        patientName={patientName}
+      />
+      <Container maxWidth="md" sx={{ paddingTop: '48px' }}>
+        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+          <Box sx={{ marginBottom: 2, flex: '1 1 auto', minWidth: '200px' }}>
+            <Paper sx={{ padding: '4px' }} elevation={3}>
+              <Typography
+                gutterBottom
+                variant="h6"
+                component="p"
+                sx={{
+                  whiteSpace: 'normal',
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word',
+                }}
+              >
+                Fila de espera: {doctorConsults?.pending}
+              </Typography>
+            </Paper>
+          </Box>
+          <Box sx={{ marginBottom: 2, flex: '1 1 auto', minWidth: '200px' }}>
+            <Paper sx={{ padding: '4px' }} elevation={3}>
+              <Typography
+                gutterBottom
+                variant="h6"
+                component="p"
+                sx={{
+                  whiteSpace: 'normal',
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word',
+                }}
+              >
+                Atendidos: {doctorConsults?.attended}
+              </Typography>
+            </Paper>
+          </Box>
+        </Box>
+
+        <DataGrid
+          disableColumnFilter
+          disableColumnSelector
+          disableDensitySelector
+          rows={doctorConsults?.data}
+          loading={loadingConsults}
+          columns={consultColumns({
+            handleCompleteConsult: (patientName, consultId) => {
+              setPatientName(patientName);
+              setConsultIdToComplete(consultId);
+              setIsCompleteModalOpen(true);
+            },
+            handleOpenPatientRecord: (patientName, patientCpf) => {
+              setPatientName(patientName);
+              setPatientCpf(patientCpf);
+              setShowMedicalConsultsRecord(true);
+            },
+          })}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+        />
+      </Container>
+    </>
   );
 }

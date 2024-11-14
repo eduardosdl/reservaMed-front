@@ -1,12 +1,15 @@
 import { GridColDef } from '@mui/x-data-grid';
 import { ButtonGroup, IconButton } from '@mui/material';
-import { CheckCircle as CheckIcon, Book as BookIcon } from '@mui/icons-material';
+import {
+  CheckCircle as CheckIcon,
+  Book as BookIcon,
+} from '@mui/icons-material';
 
 import { formatCpf } from '../../utils/formatCpf';
 
 interface createConsultColumsProps {
-  handleCompleteConsult: (id: number) => void;
-  handleOpenPatientRecord: (id: number) => void;
+  handleCompleteConsult: (patientName: string, id: number) => void;
+  handleOpenPatientRecord: (patientName: string, cpf: string) => void;
 }
 
 export function consultColumns({
@@ -68,10 +71,23 @@ export function consultColumns({
         if (consult.status == 'A') {
           return (
             <ButtonGroup variant="outlined">
-              <IconButton aria-label="edit" onClick={() => handleOpenPatientRecord(consult.patient.id)}>
+              <IconButton
+                aria-label="edit"
+                onClick={() =>
+                  handleOpenPatientRecord(
+                    consult.patient.name,
+                    consult.patient.cpf,
+                  )
+                }
+              >
                 <BookIcon color="info" />
               </IconButton>
-              <IconButton aria-label="success" onClick={() => handleCompleteConsult(consultId)}>
+              <IconButton
+                aria-label="success"
+                onClick={() =>
+                  handleCompleteConsult(consult.patient.name, consultId)
+                }
+              >
                 <CheckIcon color="success" />
               </IconButton>
             </ButtonGroup>

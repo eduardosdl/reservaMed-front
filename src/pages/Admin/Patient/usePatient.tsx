@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { Patient } from '../../../types/patient';
 import { PatientService } from '../../../services/PatientService';
 import { APIError } from '../../../errors/ApiError';
+import { PatientFormRefMethods } from '../../../components/PatientForm';
 
 export function usePatient() {
   const [patients, setPatients] = useState<Patient[]>();
@@ -11,7 +12,9 @@ export function usePatient() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFrom, setIsEditForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<Patient | undefined>();
+  const [patientIdToEdit, setPatientIdToEdit] = useState(0);
+
+  const patientFormRef = useRef<PatientFormRefMethods | null>(null);
 
   async function loadPatients() {
     try {
@@ -32,26 +35,27 @@ export function usePatient() {
   }, []);
 
   async function handleOpenCreateModal() {
-    setFormData(undefined);
     setIsEditForm(false);
     setIsModalOpen(true);
   }
 
   function handleOpenEditModal(data: Patient) {
-    setFormData(data);
+    patientFormRef.current?.setFieldsValues(data);
+    setPatientIdToEdit(data.id);
     setIsEditForm(true);
     setIsModalOpen(true);
   }
 
   function handleCloseModal() {
+    patientFormRef.current?.resetFields();
     setIsModalOpen(false);
   }
 
   async function handleSubmit(data: Omit<Patient, 'id'>) {
     try {
       setIsSubmitting(true);
-      if (isEditFrom && formData) {
-        await PatientService.getInstance().updatePatient(formData.id, data);
+      if (isEditFrom) {
+        await PatientService.getInstance().updatePatient(patientIdToEdit, data);
         toast.success('Paciente editado com sucesso');
       } else {
         await PatientService.getInstance().createPatient(data);
@@ -59,12 +63,12 @@ export function usePatient() {
       }
 
       await loadPatients();
+      handleCloseModal();
     } catch (error) {
       if (error instanceof APIError) {
         toast.error(error.message);
       }
     } finally {
-      handleCloseModal();
       setIsSubmitting(false);
     }
   }
@@ -87,7 +91,7 @@ export function usePatient() {
     isModalOpen,
     isSubmitting,
     isEditFrom,
-    formData,
+    patientFormRef,
     handleOpenCreateModal,
     handleOpenEditModal,
     handleCloseModal,

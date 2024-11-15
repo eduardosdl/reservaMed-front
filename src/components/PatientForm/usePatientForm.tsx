@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useImperativeHandle } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { CepService } from '../../services/CepService';
 import { isValidCpf } from '../../utils/isValidCpf';
 import { Patient } from '../../types/patient';
+import { PatientFormRefMethods } from '.';
 
 const patientSchema = z.object({
   name: z.string().min(1, 'Nome completo é obrigatório'),
@@ -50,7 +51,10 @@ const emptyPatient = {
   medicalHistory: '',
 };
 
-export function usePatientForm({ initialData, onSubmit }: UsePatientFormProps) {
+export function usePatientForm(
+  { onSubmit }: UsePatientFormProps,
+  ref: React.Ref<PatientFormRefMethods>,
+) {
   const {
     control,
     handleSubmit,
@@ -66,22 +70,27 @@ export function usePatientForm({ initialData, onSubmit }: UsePatientFormProps) {
   });
 
   const watchBirthDate = watch('birthDate');
-
   const watchCep = watch('cep');
 
-  useEffect(() => {
-    const sanitizedData = {
-      ...initialData,
-      cep: initialData?.cep || '',
-      street: initialData?.street || '',
-      city: initialData?.city || '',
-      state: initialData?.state || '',
-      allergy: initialData?.allergy || '',
-      guardianCpf: initialData?.guardianCpf || '',
-      medicalHistory: initialData?.medicalHistory || '',
-    };
-    reset({ ...emptyPatient, ...sanitizedData });
-  }, [initialData, reset]);
+  useImperativeHandle(ref, () => ({
+    setFieldsValues: (patient: Patient) => {
+      reset({
+        name: patient?.name || '',
+        birthDate: patient?.birthDate || '',
+        cpf: patient?.cpf || '',
+        cellPhone: patient?.cellPhone || '',
+        email: patient?.email || '',
+        cep: patient?.cep || '',
+        street: patient?.street || '',
+        city: patient?.city || '',
+        state: patient?.state || '',
+        allergy: patient?.allergy || '',
+        guardianCpf: patient?.guardianCpf || '',
+        medicalHistory: patient?.medicalHistory || '',
+      });
+    },
+    resetFields: () => reset(),
+  }));
 
   const fetchAddressData = useCallback(
     (cep: string) => {
@@ -113,7 +122,6 @@ export function usePatientForm({ initialData, onSubmit }: UsePatientFormProps) {
       guardianCpf: data.guardianCpf?.replace(/\D/g, ''),
     };
     onSubmit(formatData as Patient);
-    reset();
   }
 
   function handleCepBlur() {
@@ -125,11 +133,10 @@ export function usePatientForm({ initialData, onSubmit }: UsePatientFormProps) {
 
   return {
     control,
+    errors,
+    watchBirthDate,
     handleSubmit,
     setValue,
-    errors,
-    reset,
-    watchBirthDate,
     handleFormSubmit,
     handleCepBlur,
   };

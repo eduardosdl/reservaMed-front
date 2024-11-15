@@ -7,6 +7,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import { useDrawerContext } from '../contexts/drawerContext';
 
 interface NavItemProps extends ListItemButtonProps {
   name: string;
@@ -16,6 +17,7 @@ interface NavItemProps extends ListItemButtonProps {
 
 export function NavItem({ name, icon, path }: NavItemProps) {
   const navigate = useNavigate();
+  const { toggleDrawerOpen } = useDrawerContext();
 
   function isActive(path: string): boolean {
     return location.pathname === path;
@@ -34,7 +36,10 @@ export function NavItem({ name, icon, path }: NavItemProps) {
           backgroundColor: theme => theme.palette.primary.main,
         },
       }}
-      onClick={() => navigate(path)}
+      onClick={() => {
+        navigate(path)
+        toggleDrawerOpen()
+      }}
     >
       {icon && (
         <ListItemIcon>

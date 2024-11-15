@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Doctor } from '../../../types/doctor';
 import { DoctorService } from '../../../services/DoctorService';
 import { toast } from 'react-toastify';
 import { APIError } from '../../../errors/ApiError';
+import { DoctorFormRefMethods } from '../../../components/DoctorForm';
 
 export function useDoctor() {
   const [doctors, setDoctors] = useState<Doctor[]>();
@@ -10,7 +11,9 @@ export function useDoctor() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditForm, setIsEditForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<Doctor | undefined>(undefined);
+  const [doctorCrmToEdit, setDoctorCrmToEdit] = useState('');
+
+  const doctorFormRef = useRef<DoctorFormRefMethods | null>(null);
 
   async function loadDoctors() {
     try {
@@ -31,38 +34,39 @@ export function useDoctor() {
   }, []);
 
   function handleOpenCreateModal() {
-    setFormData(undefined);
     setIsEditForm(false);
     setIsModalOpen(true);
   }
 
   function handleOpenEditModal(data: Doctor) {
-    setFormData(data);
+    doctorFormRef.current?.setFieldsValues(data);
+    setDoctorCrmToEdit(data.crm);
     setIsEditForm(true);
     setIsModalOpen(true);
   }
 
   function handleCloseModal() {
+    doctorFormRef.current?.resetFields();
     setIsModalOpen(false);
   }
 
   async function handleSubmit(data: Omit<Doctor, 'id'>) {
     try {
       if (isEditForm) {
-        await DoctorService.getInstance().updateDoctor(data.crm, data);
+        await DoctorService.getInstance().updateDoctor(doctorCrmToEdit, data);
         toast.success('Médico atualizado com sucesso');
       } else {
         await DoctorService.getInstance().createDoctor(data);
         toast.success('Médico criado com sucesso');
       }
       await loadDoctors();
+      handleCloseModal();
     } catch (error) {
       if (error instanceof APIError) {
         toast.error(error.message);
       }
     } finally {
       setIsSubmitting(false);
-      handleCloseModal();
     }
   }
 
@@ -70,11 +74,14 @@ export function useDoctor() {
     try {
       setIsSubmitting(true);
       await DoctorService.getInstance().deleteDoctor(crm);
+      await loadDoctors();
       toast.success('Médico excluído com sucesso');
     } catch (error) {
       if (error instanceof APIError) {
         toast.error(error.message);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -83,8 +90,8 @@ export function useDoctor() {
     loadingDoctors,
     isModalOpen,
     isEditForm,
-    formData,
     isSubmitting,
+    doctorFormRef,
     handleOpenCreateModal,
     handleOpenEditModal,
     handleCloseModal,

@@ -11,8 +11,8 @@ export function Doctor() {
     loadingDoctors,
     isModalOpen,
     isEditForm,
-    formData,
     isSubmitting,
+    doctorFormRef,
     handleOpenCreateModal,
     handleOpenEditModal,
     handleCloseModal,
@@ -32,7 +32,7 @@ export function Doctor() {
         onSubmit={handleSubmit}
         isLoading={isSubmitting}
         isEditForm={isEditForm}
-        initialData={formData}
+        ref={doctorFormRef}
       />
 
       <DataGrid

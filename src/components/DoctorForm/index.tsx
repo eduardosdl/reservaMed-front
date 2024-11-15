@@ -5,28 +5,31 @@ import { Doctor } from '../../types/doctor';
 import { FormInput } from '../InputForm';
 import { formatPhone } from '../../utils/formatPhone';
 import { Button } from '../Button';
+import { forwardRef } from 'react';
+
+export interface DoctorFormRefMethods {
+  setFieldsValues: (data: Doctor) => void;
+  resetFields: () => void;
+}
 
 interface DoctorFormProps {
   isModalOpen: boolean;
-  initialData?: Doctor;
   isLoading: boolean;
   isEditForm: boolean;
   handleCloseModal: () => void;
   onSubmit: (data: Doctor) => void;
 }
 
-export function DoctorForm({
+export const DoctorForm = forwardRef(({
   isModalOpen,
-  initialData,
   isLoading,
   isEditForm,
   handleCloseModal,
   onSubmit,
-}: DoctorFormProps) {
+}: DoctorFormProps, ref: React.Ref<DoctorFormRefMethods>) => {
   const { control, handleSubmit, errors, handleFormSubmit } = useDoctorForm({
-    initialData,
-    onSubmit,
-  });
+    onSubmit
+  }, ref);
 
   return (
     <ModalForm open={isModalOpen} onClose={handleCloseModal}>
@@ -89,4 +92,4 @@ export function DoctorForm({
       </Grid>
     </ModalForm>
   );
-}
+})

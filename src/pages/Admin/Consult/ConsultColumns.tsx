@@ -1,7 +1,6 @@
 import { GridColDef } from '@mui/x-data-grid';
-import { Box } from '@mui/material';
-
-import { Button } from '../../../components/Button';
+import { Box, IconButton } from '@mui/material';
+import { Cancel as CancelIcon, Edit as EditIcon, Check as CheckIcon } from '@mui/icons-material';
 
 import { formatCpf } from '../../../utils/formatCpf';
 import { Consult } from '../../../types/consult/consult';
@@ -72,24 +71,21 @@ export function consultColumns({
         if (consult.status == 'A') {
           return (
             <Box>
-              <Button
-                onClick={() => handleCompleteConsult(consultId)}
-                color="success"
+              <IconButton
+                aria-label="success"
+                onClick={() =>
+                  handleCompleteConsult(consultId)
+                }
               >
-                Completar
-              </Button>
-              <Button
-                sx={{ mx: 1 }}
-                onClick={() => handleOpenEditModal(consult)}
-              >
-                Alterar
-              </Button>
-              <Button
-                onClick={() => handleCancelConsult(consultId)}
-                color="error"
-              >
-                Cancelar
-              </Button>
+                <CheckIcon color="success" />
+              </IconButton>
+              <IconButton aria-label="edit" 
+                onClick={() => handleOpenEditModal(consult)}>
+                <EditIcon color="info" />
+              </IconButton>
+              <IconButton aria-label="delete" onClick={() => handleCancelConsult(consultId)}>
+                <CancelIcon color="error" />
+              </IconButton>
             </Box>
           );
         } else {

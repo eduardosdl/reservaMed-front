@@ -5,20 +5,20 @@ import { consultColumns } from './ConsultColumns';
 
 import { BaseDashboard } from '../../../components/BaseDashboard';
 import { ConsultForm } from '../../../components/ConsultForm';
-import { PrescriptionModal } from '../../../components/PrescriptionModal';
+import { DescriptionConsultModal } from '../../../components/DescriptionConsultModal';
 
 export function RecordConsults() {
   const {
     consults,
     loadingConsults,
     isFormModalOpen,
-    prescriptionData,
+    descriptionData,
     isPrescriptionModalOpen,
     formData,
     loadConsults,
     handleOpenCreateModal,
     handleCloseModal,
-    handleShowPrecription,
+    handleShowConsultDescription,
   } = useRecordConsult();
   return (
     <BaseDashboard
@@ -34,8 +34,8 @@ export function RecordConsults() {
         reloadData={loadConsults}
       />
 
-      <PrescriptionModal
-        data={prescriptionData}
+      <DescriptionConsultModal
+        data={descriptionData}
         modalOpen={isPrescriptionModalOpen}
         onClose={handleCloseModal}
       />
@@ -47,7 +47,7 @@ export function RecordConsults() {
         rows={consults}
         loading={loadingConsults}
         columns={consultColumns({
-          handleShowPrecription,
+          handleShowConsultDescription,
         })}
         slots={{ toolbar: GridToolbar }}
         slotProps={{
@@ -55,7 +55,6 @@ export function RecordConsults() {
             showQuickFilter: true,
           },
         }}
-        getRowId={value => value.id_consult}
       />
     </BaseDashboard>
   );

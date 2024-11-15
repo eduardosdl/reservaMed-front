@@ -5,13 +5,12 @@ import { ConsultService } from '../../../services/ConsultService';
 import { Consult } from '../../../types/consult/consult';
 import { ConsultRequest } from '../../../types/consult/consultRequest';
 import { APIError } from '../../../errors/ApiError';
-import { Prescription } from '../../../types/prescription';
 
 export function useRecordConsult() {
   const [consults, setConsults] = useState<Consult[]>([]);
   const [loadingConsults, setLoadingConsults] = useState(true);
   const [isFormModalOpen, seIsFormModalOpen] = useState(false);
-  const [prescriptionData, setPrescriptionData] = useState<Prescription>();
+  const [descriptionData, setDescriptionData] = useState('');
   const [isPrescriptionModalOpen, setPrescriptionModalOpen] = useState(false);
   const [formData, setFormData] = useState<ConsultRequest | undefined>();
 
@@ -43,29 +42,26 @@ export function useRecordConsult() {
     setPrescriptionModalOpen(false);
   }
 
-  async function handleShowPrecription(id: number) {
-    try {
-      const prescription =
-        await ConsultService.getInstance().getPrescription(id);
-      setPrescriptionData(prescription);
-      setPrescriptionModalOpen(true);
-    } catch (error) {
-      if (error instanceof APIError) {
-        toast.error(error.message);
-      }
+  async function handleShowConsultDescription(prescription?: string) {
+    if (prescription != null) {
+      setDescriptionData(prescription);
+    } else {
+      setDescriptionData('Sem descrição de consulta')
     }
+    
+    setPrescriptionModalOpen(true);
   }
 
   return {
     consults,
     loadingConsults,
     isFormModalOpen,
-    prescriptionData,
+    descriptionData,
     isPrescriptionModalOpen,
     formData,
     loadConsults,
     handleOpenCreateModal,
     handleCloseModal,
-    handleShowPrecription,
+    handleShowConsultDescription,
   };
 }

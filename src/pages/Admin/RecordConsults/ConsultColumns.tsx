@@ -4,13 +4,14 @@ import { Chip } from '@mui/material';
 import { Button } from '../../../components/Button';
 
 import { formatCpf } from '../../../utils/formatCpf';
+import { Consult } from '../../../types/consult/consult';
 
 interface createConsultColumsProps {
-  handleShowPrecription: (id: number) => void;
+  handleShowConsultDescription: (description?: string) => void;
 }
 
 export function consultColumns({
-  handleShowPrecription,
+  handleShowConsultDescription: handleShowPrecription,
 }: createConsultColumsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -56,8 +57,8 @@ export function consultColumns({
       headerName: 'Ações',
       width: 300,
       renderCell: params => {
-        const consult = params.row;
-        const consultId = consult.id_consult || consult.id;
+        const consult: Consult = params.row;
+        const consultDesc = consult.description;
         switch (consult.status) {
           case 'C':
             return <Chip color="error" label="Cancelada" />;
@@ -65,7 +66,7 @@ export function consultColumns({
             return (
               <Button
                 color="secondary"
-                onClick={() => handleShowPrecription(consultId)}
+                onClick={() => handleShowPrecription(consultDesc)}
               >
                 Diagnostico
               </Button>

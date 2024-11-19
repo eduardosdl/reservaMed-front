@@ -31,8 +31,8 @@ export function Home() {
         <Button sx={{ width: 1 }} onClick={() => navigate('/doctors')}>
           Médico
         </Button>
-        <Button sx={{ width: 1 }} onClick={() => navigate('/consults')}>
-          Visuaizar consultas
+        <Button sx={{ width: 1 }} onClick={() => navigate('/patients')}>
+          Paciente
         </Button>
       </Card>
     </Container>

@@ -38,6 +38,22 @@ export class PatientService {
     }
   }
 
+  public async getPatient(cpf: string): Promise<Patient> {
+    try {
+      const response: AxiosResponse<Patient> =
+        await this.apiClient.get(`/patients/${cpf}`);
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar pacientes: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar pacientes, tente novamente mais tarde',
+      );
+    }
+  }
+
   public async createPatient(patient: Omit<Patient, 'id'>): Promise<Patient> {
     try {
       const response: AxiosResponse<Patient> = await this.apiClient.post(

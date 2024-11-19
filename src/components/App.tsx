@@ -7,6 +7,7 @@ import { routes } from '../routes';
 import { theme } from '../theme';
 
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-calendar/dist/Calendar.css';
 
 export function App() {
   return (

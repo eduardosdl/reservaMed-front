@@ -19,6 +19,7 @@ export function useConsult() {
   const [consultIdToCancel, setConsultIdToCancel] = useState(0);
   const [consultIdToEdit, setConsultIdToEdit] = useState<number | undefined>();
   const [formData, setFormData] = useState<ConsultRequest | undefined>();
+  const [patientName, setPatientName] = useState('');
 
   async function loadConsults() {
     try {
@@ -46,12 +47,13 @@ export function useConsult() {
 
   function handleOpenEditModal(data: Consult) {
     const requestData: ConsultRequest = {
-      id_doctor: data.doctor.id,
-      cpf_patient: data.patient.cpf,
+      doctorId: data.doctor.id,
+      patientCpf: data.patient.cpf,
       date: data.date,
       type: getConsultTypeValue(data.type_consult),
     };
 
+    setPatientName(data.patient.name);
     setConsultIdToEdit(data.id);
     setFormData(requestData);
     seIsFormModalOpen(true);
@@ -86,6 +88,7 @@ export function useConsult() {
     consultIdToCancel,
     consultIdToEdit,
     formData,
+    patientName,
     loadConsults,
     handleOpenCreateModal,
     handleOpenEditModal,

@@ -57,23 +57,6 @@ export class ConsultService {
     }
   }
 
-  // public async getPrescription(consultId: number): Promise<Prescription> {
-  //   try {
-  //     const response: AxiosResponse<Prescription> = await this.apiClient.get(
-  //       `/historyConsult/consult/${consultId}`,
-  //     );
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log(`Houve um erro ao criar consultas: ${error}`);
-  //     if (axios.isAxiosError(error) && error.response?.status === 400) {
-  //       throw new APIError(error.response?.data.message);
-  //     }
-  //     throw new APIError(
-  //       'Houve um erro ao buscar consultas, tente novamente mais tarde',
-  //     );
-  //   }
-  // }
-
   public async getConsultsByCpf(cpf: string): Promise<Consult[]> {
     try {
       const response: AxiosResponse<Consult[]> = await this.apiClient.get(
@@ -100,7 +83,10 @@ export class ConsultService {
       return response.data;
     } catch (error) {
       console.log(`Houve um erro ao criar consultas: ${error}`);
-      if (axios.isAxiosError(error) && error.response?.status === 400) {
+      if (
+        axios.isAxiosError(error) &&
+        (error.response?.status === 400 || error.response?.status === 404)
+      ) {
         throw new APIError(error.response?.data.message);
       }
       throw new APIError(

@@ -13,8 +13,8 @@ import { APIError } from '../../errors/ApiError';
 import { ConsultService } from '../../services/ConsultService';
 
 const consultSchema = z.object({
-  id_doctor: z.number().min(1, 'Selecione um médico'),
-  cpf_patient: z.string().min(1, 'Informe um CPF'),
+  doctorId: z.number().min(1, 'Selecione um médico'),
+  patientCpf: z.string().min(1, 'Informe um CPF'),
   date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, 'Formato de data inválido')
@@ -72,7 +72,7 @@ export function useConsultForm({
       const data = await DoctorService.getInstance().getAllDoctors();
       setDoctors(data);
       if (!initialData && data.length > 0) {
-        setValue('id_doctor', data[0].id || 0);
+        setValue('doctorId', data[0].id || 0);
       }
     } catch (error) {
       if (error instanceof APIError) {
@@ -93,7 +93,7 @@ export function useConsultForm({
     try {
       const formatedData = {
         ...data,
-        cpf_patient: data.cpf_patient.replace(/\D/g, ''),
+        patientCpf: data.patientCpf.replace(/\D/g, ''),
       };
       setIsSubmitting(true);
       await ConsultService.getInstance().createConsult(formatedData);
@@ -113,7 +113,7 @@ export function useConsultForm({
     try {
       const formatedData = {
         ...data,
-        cpf_patient: data.cpf_patient.replace(/\D/g, ''),
+        patientCpf: data.patientCpf.replace(/\D/g, ''),
       };
       setIsSubmitting(true);
       await ConsultService.getInstance().updateConsult(consultId, formatedData);
@@ -132,7 +132,7 @@ export function useConsultForm({
   function handleFormSubmit(data: ConsultRequest) {
     if (consultIdToEdit) {
       handleUpdateConsult(consultIdToEdit, data);
-      reset()
+      reset();
       return;
     }
 

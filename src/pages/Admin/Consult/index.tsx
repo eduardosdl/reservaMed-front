@@ -20,6 +20,7 @@ export function Consult() {
     isBefore24h,
     consultIdToEdit,
     formData,
+    patientName,
     loadConsults,
     handleOpenCreateModal,
     handleOpenEditModal,
@@ -44,6 +45,7 @@ export function Consult() {
       <CompleteConsult
         consultId={consultIdToComplete}
         open={isCompleteModalOpen}
+        patientName={patientName}
         onClose={handleCloseModal}
         reloadData={loadConsults}
       />

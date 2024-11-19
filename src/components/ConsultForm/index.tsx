@@ -51,7 +51,7 @@ export function ConsultForm({
       >
         <Grid item xs={12}>
           <Controller
-            name="id_doctor"
+            name="doctorId"
             control={control}
             render={({ field }) => (
               <TextField
@@ -59,8 +59,8 @@ export function ConsultForm({
                 select
                 label="Médico"
                 fullWidth
-                error={!!errors.id_doctor}
-                helperText={errors.id_doctor?.message}
+                error={!!errors.doctorId}
+                helperText={errors.doctorId?.message}
                 {...field}
                 value={field.value || ''}
               >
@@ -76,11 +76,11 @@ export function ConsultForm({
         <Grid item xs={12}>
           <FormInput
             disabled={!!consultIdToEdit}
-            name="cpf_patient"
+            name="patientCpf"
             control={control}
             label="CPF do paciente"
-            error={!!errors.cpf_patient}
-            errorMessage={errors.cpf_patient?.message}
+            error={!!errors.patientCpf}
+            errorMessage={errors.patientCpf?.message}
             formatValue={formatCpf}
             maxLength={14}
           />

@@ -43,7 +43,7 @@ export class DoctorService {
   public async getAllConsults(crm: string): Promise<DoctorConsults> {
     try {
       const response: AxiosResponse<DoctorConsults> = await this.apiClient.get(
-        `/doctors/${crm}/appointments?date=2024-11-15T10:30`,
+        `/doctors/${crm}/appointments`,
       );
       return response.data;
     } catch (error) {
@@ -57,7 +57,10 @@ export class DoctorService {
     }
   }
 
-  public async getConsultsByCrmAndCpf(crm: string, cpf: string): Promise<Consult[]> {
+  public async getConsultsByCrmAndCpf(
+    crm: string,
+    cpf: string,
+  ): Promise<Consult[]> {
     try {
       const response: AxiosResponse<Consult[]> = await this.apiClient.get(
         `/doctors/${crm}/patient/${cpf}/appointments`,

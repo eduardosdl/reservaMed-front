@@ -1,9 +1,9 @@
-import { useParams } from 'react-router-dom';
-import { Patient as IPatient } from '../../types/patient';
 import { useEffect, useState } from 'react';
-import { PatientService } from '../../services/PatientService';
-import { APIError } from '../../errors/ApiError';
+import { useParams } from 'react-router-dom';
+
 import { toast } from 'react-toastify';
+import Calendar from 'react-calendar';
+import { Value as DateType } from 'react-calendar/src/shared/types.js';
 import {
   Box,
   Chip,
@@ -15,33 +15,29 @@ import {
   Select,
   Typography,
 } from '@mui/material';
+
+import { PatientService } from '../../services/PatientService';
+import { APIError } from '../../errors/ApiError';
 import { Doctor } from '../../types/doctor';
 import { DoctorService } from '../../services/DoctorService';
-import Calendar from 'react-calendar';
-import { Value } from 'react-calendar/src/shared/types.js';
 import { consultTypes } from '../../data/consultTypes';
+import { Patient as IPatient } from '../../types/patient';
+import { ConsultService } from '../../services/ConsultService';
+import { ConfirmConsultModal } from '../../components/ConfirmConsultModal';
 
 export function Patient() {
   const { patientCpf } = useParams<{ patientCpf: string }>();
 
   const [patientData, setPatientData] = useState<IPatient>({} as IPatient);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [selectedDoctor, setSelectedDoctor] = useState('');
+  const [selectedDoctorId, setSelectedDoctorId] = useState('');
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor>({} as Doctor);
   const [selectedConsultType, setSelectedConsultType] = useState('');
-  const [selectedDate, setSelectedDate] = useState<Value>(new Date());
+  const [selectedDate, setSelectedDate] = useState<DateType>(new Date());
+  const [selectedFormattedDate, setSelectedFormattedDate] = useState('');
   const [selectedHour, setSelectedHour] = useState('');
-  const [disponibility, setDisponibility] = useState<string[]>([
-    '08:00',
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-  ]);
+  const [disponibility, setDisponibility] = useState<string[]>([]);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
 
   async function loadPatientData(patientCpf: string) {
     try {
@@ -76,18 +72,59 @@ export function Patient() {
     }
   }, [patientCpf]);
 
+  async function handleSelectDate(date: DateType) {
+    try {
+      setSelectedDate(date);
+
+      if (!(selectedDoctorId != '' && selectedConsultType != '')) {
+        toast.error('Selecione um médico e o tipo de consulta');
+        return;
+      }
+
+      if (date == null) {
+        toast.error('Informe uma data');
+        return;
+      }
+
+      const formattedDate = new Date(date.toString()).toJSON().split('T')[0];
+      setSelectedFormattedDate(formattedDate);
+
+      const data = await ConsultService.getInstance().getAvailability(
+        selectedDoctorId,
+        formattedDate,
+      );
+
+      setDisponibility(data);
+    } catch (error) {
+      if (error instanceof APIError) {
+        toast.error(error.message);
+      }
+      toast.error('Houve um erro ao buscar disponibilidade');
+    }
+  }
+
   function handleSelectHour(hour: string) {
-    console.log('Agendamento de consulta');
-    console.log({
-      patientCpf,
-      doctorId: selectedDoctor,
-      date: selectedDate,
-      hour: hour,
-    });
+    const selectedDoctor = doctors.find(
+      doc => doc.id.toString() == selectedDoctorId,
+    );
+
+    setSelectedHour(hour);
+    setSelectedDoctor(selectedDoctor as Doctor);
+    setIsConfirmModalVisible(true);
   }
 
   return (
     <Container maxWidth="md" sx={{ paddingTop: '48px' }}>
+      <ConfirmConsultModal
+        doctor={selectedDoctor}
+        patient={patientData}
+        type={selectedConsultType}
+        isVisible={isConfirmModalVisible}
+        onClose={() => setIsConfirmModalVisible(false)}
+        date={selectedFormattedDate}
+        hour={selectedHour}
+      />
+
       <Box display="flex" flexDirection="column" gap={4}>
         <Paper elevation={4}>
           <Box
@@ -109,14 +146,19 @@ export function Patient() {
           </Box>
         </Paper>
 
-        <Box display="flex" flexWrap="wrap" justifyContent="space-between" gap={4}>
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          gap={4}
+        >
           <FormControl sx={{ flex: 1, minWidth: '200px' }}>
             <InputLabel id="doctor-select-label">Selecione o Médico</InputLabel>
             <Select
               label="Selecione o Médico"
               labelId="doctor-select-label"
-              value={selectedDoctor}
-              onChange={e => setSelectedDoctor(e.target.value)}
+              value={selectedDoctorId}
+              onChange={e => setSelectedDoctorId(e.target.value)}
             >
               {doctors.map(doctor => (
                 <MenuItem key={doctor.id} value={doctor.id}>
@@ -147,9 +189,10 @@ export function Patient() {
 
         <Box display="flex" justifyContent="center">
           <Calendar
-            onChange={value => setSelectedDate(value)}
+            onChange={value => handleSelectDate(value)}
             value={selectedDate}
             minDate={new Date()}
+            calendarType="gregory"
           />
 
           <Box
@@ -160,13 +203,13 @@ export function Patient() {
             sx={{ overflowY: 'auto', maxHeight: '300px' }}
           >
             <Typography variant="body1" component="p">
-              Escolha um horário
+              Escolha uma hora
             </Typography>
             {disponibility.map(hour => (
               <Chip
                 key={hour}
                 label={hour}
-                onClick={() => setSelectedHour(hour)}
+                onClick={() => handleSelectHour(hour)}
                 sx={{ cursor: 'pointer' }}
               />
             ))}

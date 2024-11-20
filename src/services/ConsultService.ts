@@ -74,6 +74,26 @@ export class ConsultService {
     }
   }
 
+  public async getAvailability(
+    doctorId: string,
+    date: string,
+  ): Promise<string[]> {
+    try {
+      const response: AxiosResponse<string[]> = await this.apiClient.get(
+        `/appointments/availability/${doctorId}/${date}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar disponibilidade: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar disponibilidade, tente novamente mais tarde',
+      );
+    }
+  }
+
   public async createConsult(consult: ConsultRequest): Promise<Consult> {
     try {
       const response: AxiosResponse<Consult> = await this.apiClient.post(

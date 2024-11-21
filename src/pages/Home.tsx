@@ -1,8 +1,8 @@
 import { Card, Container } from '@mui/material';
-import Button from '../components/Button';
+import {Button} from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 
-export default function Home() {
+export function Home() {
   const navigate = useNavigate();
 
   return (
@@ -28,11 +28,11 @@ export default function Home() {
         <Button sx={{ width: 1 }} onClick={() => navigate('/admin')}>
           Administrador
         </Button>
-        <Button sx={{ width: 1 }} onClick={() => navigate('/appointment')}>
-          Agendar consulta
+        <Button sx={{ width: 1 }} onClick={() => navigate('/doctors')}>
+          Médico
         </Button>
-        <Button sx={{ width: 1 }} onClick={() => navigate('/consults')}>
-          Visuaizar consultas
+        <Button sx={{ width: 1 }} onClick={() => navigate('/patients')}>
+          Paciente
         </Button>
       </Card>
     </Container>

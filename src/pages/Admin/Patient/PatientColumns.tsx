@@ -1,18 +1,18 @@
 import { GridColDef } from '@mui/x-data-grid';
 import { Chip } from '@mui/material';
 
-import formatCpf from '../../../utils/formatCpf';
-import formatPhone from '../../../utils/formatPhone';
-import formatCep from '../../../utils/formatCep';
-import Patient from '../../../types/patient';
-import ActionTableButton from '../../../components/ActionTableButtons';
+import { formatCpf } from '../../../utils/formatCpf';
+import { formatPhone } from '../../../utils/formatPhone';
+import { formatCep } from '../../../utils/formatCep';
+import { Patient } from '../../../types/patient';
+import { ActionTableButton } from '../../../components/ActionTableButtons';
 
 interface PatientColumnsProps {
   handleOpenEditModal: (patientData: Patient) => void;
   handleDeletePatient: (cpf: string) => void;
 }
 
-export default function PatientColumns({
+export function PatientColumns({
   handleOpenEditModal,
   handleDeletePatient,
 }: PatientColumnsProps): GridColDef[] {

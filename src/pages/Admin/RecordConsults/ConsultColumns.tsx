@@ -1,21 +1,17 @@
 import { GridColDef } from '@mui/x-data-grid';
-import formatCpf from '../../utils/formatCpf';
-import { Box, Chip } from '@mui/material';
-import Button from '../Button';
-import Consult from '../../types/consult';
+import { Chip } from '@mui/material';
+
+import { Button } from '../../../components/Button';
+
+import { formatCpf } from '../../../utils/formatCpf';
+import { Consult } from '../../../types/consult/consult';
 
 interface createConsultColumsProps {
-  onCompleteConsult: (id: number) => void;
-  onUpdateConsult: (data: Consult) => void;
-  onCancelConsult: (id: number) => void;
-  onShowPrecription: (id: number) => void;
+  handleShowConsultDescription: (description?: string) => void;
 }
 
-export default function createConsultColumns({
-  onCompleteConsult,
-  onUpdateConsult,
-  onCancelConsult,
-  onShowPrecription,
+export function consultColumns({
+  handleShowConsultDescription: handleShowPrecription,
 }: createConsultColumsProps): GridColDef[] {
   const columns: GridColDef[] = [
     {
@@ -27,13 +23,13 @@ export default function createConsultColumns({
     {
       field: 'patientCpf',
       headerName: 'CPF do paciente',
-      width: 200,
+      width: 150,
       renderCell: params => formatCpf(params.row.patient.cpf),
     },
     {
       field: 'date',
       headerName: 'Data da consulta',
-      width: 200,
+      width: 150,
       type: 'string',
       valueFormatter: value => {
         const date = new Date(value).toLocaleDateString('pt-BR');
@@ -51,39 +47,26 @@ export default function createConsultColumns({
       renderCell: params => params.row.doctor.name,
     },
     {
+      field: 'specialty',
+      headerName: 'Especialidade',
+      width: 200,
+      renderCell: params => params.row.doctor.specialty,
+    },
+    {
       field: 'id',
       headerName: 'Ações',
-      width: 350,
+      width: 300,
       renderCell: params => {
-        const consult = params.row;
+        const consult: Consult = params.row;
+        const consultDesc = consult.description;
         switch (consult.status) {
-          case 'A':
-            return (
-              <Box>
-                <Button
-                  onClick={() => onCompleteConsult(consult.id)}
-                  color="success"
-                >
-                  Completar
-                </Button>
-                <Button sx={{ mx: 1 }} onClick={() => onUpdateConsult(consult)}>
-                  Alterar
-                </Button>
-                <Button
-                  onClick={() => onCancelConsult(consult.id)}
-                  color="error"
-                >
-                  Cancelar
-                </Button>
-              </Box>
-            );
           case 'C':
             return <Chip color="error" label="Cancelada" />;
           case 'P':
             return (
               <Button
                 color="secondary"
-                onClick={() => onShowPrecription(consult.id)}
+                onClick={() => handleShowPrecription(consultDesc)}
               >
                 Diagnostico
               </Button>

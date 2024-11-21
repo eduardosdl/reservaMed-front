@@ -1,7 +1,9 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import Patient from '../types/patient';
+import { Patient } from '../types/patient';
+import { APIError } from '../errors/ApiError';
 
-class PatientService {
+export class PatientService {
+  private static instance: PatientService;
   private apiClient: AxiosInstance;
 
   constructor() {
@@ -13,13 +15,46 @@ class PatientService {
     });
   }
 
-  public async getAllPatients(): Promise<Patient[]> {
-    const response: AxiosResponse<Patient[]> =
-      await this.apiClient.get('/patients');
-    return response.data;
+  public static getInstance(): PatientService {
+    if (!PatientService.instance) {
+      PatientService.instance = new PatientService();
+    }
+    return PatientService.instance;
   }
 
-  public async createPatient(patient: Patient): Promise<Patient> {
+  public async getAllPatients(): Promise<Patient[]> {
+    try {
+      const response: AxiosResponse<Patient[]> =
+        await this.apiClient.get('/patients');
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar pacientes: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar pacientes, tente novamente mais tarde',
+      );
+    }
+  }
+
+  public async getPatient(cpf: string): Promise<Patient> {
+    try {
+      const response: AxiosResponse<Patient> =
+        await this.apiClient.get(`/patients/${cpf}`);
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar pacientes: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar pacientes, tente novamente mais tarde',
+      );
+    }
+  }
+
+  public async createPatient(patient: Omit<Patient, 'id'>): Promise<Patient> {
     try {
       const response: AxiosResponse<Patient> = await this.apiClient.post(
         '/patients',
@@ -29,27 +64,30 @@ class PatientService {
     } catch (error) {
       console.log(`Houve um erro ao criar paciente: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao criar paciente, tente novamente mais tarde',
       );
     }
   }
 
-  public async updatePatient(cpf: string, patient: Patient): Promise<Patient> {
+  public async updatePatient(
+    id: number,
+    patient: Omit<Patient, 'id'>,
+  ): Promise<Patient> {
     try {
       const response: AxiosResponse<Patient> = await this.apiClient.put(
-        `/patients/${cpf}`,
+        `/patients/${id}`,
         patient,
       );
       return response.data;
     } catch (error) {
       console.log(`Houve um erro ao criar paciente: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao criar paciente, tente novamente mais tarde',
       );
     }
@@ -59,15 +97,13 @@ class PatientService {
     try {
       await this.apiClient.delete(`/patients/${cpf}`);
     } catch (error) {
-      console.log(`Houve um erro ao criar paciente: ${error}`);
+      console.log(`Houve um erro ao excluir paciente: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
-        'Houve um erro ao criar paciente, tente novamente mais tarde',
+      throw new APIError(
+        'Houve um erro ao excluir paciente, tente novamente mais tarde',
       );
     }
   }
 }
-
-export default new PatientService();

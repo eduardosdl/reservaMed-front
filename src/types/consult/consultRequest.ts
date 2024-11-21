@@ -1,6 +1,6 @@
-import ConsultType from './consultType';
+import { ConsultType } from './consultType';
 
-export default interface CreateConsult {
+export interface ConsultRequest {
   id_doctor: number;
   cpf_patient: string;
   date: string;

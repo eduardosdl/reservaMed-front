@@ -1,11 +1,13 @@
 import { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
+  Icon,
   ListItemButton,
   ListItemButtonProps,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useDrawerContext } from '../contexts/drawerContext';
 
 interface NavItemProps extends ListItemButtonProps {
   name: string;
@@ -13,14 +15,9 @@ interface NavItemProps extends ListItemButtonProps {
   path: string;
 }
 
-export default function NavItem({
-  name,
-  icon,
-  path,
-  sx,
-  ...restProps
-}: NavItemProps) {
+export function NavItem({ name, icon, path }: NavItemProps) {
   const navigate = useNavigate();
+  const { toggleDrawerOpen } = useDrawerContext();
 
   function isActive(path: string): boolean {
     return location.pathname === path;
@@ -30,7 +27,6 @@ export default function NavItem({
     <ListItemButton
       selected={isActive(path)}
       sx={{
-        ...sx,
         color: theme => theme.palette.primary.contrastText,
         '&.Mui-selected': {
           backgroundColor: theme => theme.palette.primary.light,
@@ -40,12 +36,14 @@ export default function NavItem({
           backgroundColor: theme => theme.palette.primary.main,
         },
       }}
-      onClick={() => navigate(path)}
-      {...restProps}
+      onClick={() => {
+        navigate(path)
+        toggleDrawerOpen()
+      }}
     >
       {icon && (
         <ListItemIcon>
-          <span style={{ color: 'inherit' }}>{icon}</span>
+          <Icon>{icon}</Icon>
         </ListItemIcon>
       )}
 

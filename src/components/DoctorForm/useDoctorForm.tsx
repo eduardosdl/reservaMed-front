@@ -1,11 +1,11 @@
-import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Doctor } from '../../types/doctor';
+import { formatPhone } from '../../utils/formatPhone';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { useImperativeHandle } from 'react';
+import { DoctorFormRefMethods } from '.';
 
-import formatPhone from '../../utils/formatPhone';
-import Doctor from '../../types/doctor';
-
-// Define a validação com Zod
 const doctorSchema = z.object({
   name: z.string().min(1, 'Nome completo é obrigatório'),
   crm: z
@@ -19,7 +19,6 @@ const doctorSchema = z.object({
 type DoctorFormValues = z.infer<typeof doctorSchema>;
 
 interface UseDoctorFormProps {
-  initialData?: Doctor;
   onSubmit: (data: Doctor) => void;
 }
 
@@ -30,29 +29,45 @@ const emptyDoctor = {
   specialty: '',
 };
 
-export default function useDoctorForm({
-  initialData,
-  onSubmit,
-}: UseDoctorFormProps) {
+export function useDoctorForm(
+  { onSubmit }: UseDoctorFormProps,
+  ref: React.Ref<DoctorFormRefMethods>,
+) {
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<DoctorFormValues>({
     defaultValues: {
       ...emptyDoctor,
-      ...initialData,
     },
     resolver: zodResolver(doctorSchema),
   });
+
+  useImperativeHandle(ref, () => ({
+    setFieldsValues: (doctor: Doctor) => {
+      reset({
+        name: doctor.name,
+        crm: doctor.crm,
+        cellPhone: doctor.cellPhone,
+        specialty: doctor.specialty,
+      });
+    },
+    resetFields: () => {
+      reset({
+        ...emptyDoctor,
+      });
+    }
+  }));
 
   function handleFormSubmit(data: DoctorFormValues) {
     const formatData = {
       ...data,
       cellPhone: data.cellPhone.replace(/\D/g, ''),
     };
-    onSubmit(formatData);
+    onSubmit(formatData as Doctor);
   }
 
   function handlePhoneChange(value: string) {
@@ -61,8 +76,8 @@ export default function useDoctorForm({
 
   return {
     control,
-    handleSubmit,
     errors,
+    handleSubmit,
     handleFormSubmit,
     handlePhoneChange,
   };

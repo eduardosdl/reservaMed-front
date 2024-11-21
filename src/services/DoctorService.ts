@@ -1,7 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import Doctor from '../types/doctor';
+import { Doctor } from '../types/doctor';
+import { APIError } from '../errors/ApiError';
+import { DoctorConsults } from '../types/doctorConsult';
+import { Consult } from '../types/consult/consult';
 
-class DoctorService {
+export class DoctorService {
+  private static instance: DoctorService;
   private apiClient: AxiosInstance;
 
   constructor() {
@@ -13,13 +17,64 @@ class DoctorService {
     });
   }
 
-  public async getAllDoctors(): Promise<Doctor[]> {
-    const response: AxiosResponse<Doctor[]> =
-      await this.apiClient.get('/doctors');
-    return response.data;
+  public static getInstance(): DoctorService {
+    if (!DoctorService.instance) {
+      DoctorService.instance = new DoctorService();
+    }
+    return DoctorService.instance;
   }
 
-  public async createDoctor(doctor: Doctor): Promise<Doctor> {
+  public async getAllDoctors(): Promise<Doctor[]> {
+    try {
+      const response: AxiosResponse<Doctor[]> =
+        await this.apiClient.get('/doctors');
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar médicos: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar médicos, tente novamente mais tarde',
+      );
+    }
+  }
+
+  public async getAllConsults(crm: string): Promise<DoctorConsults> {
+    try {
+      const response: AxiosResponse<DoctorConsults> = await this.apiClient.get(
+        `/doctors/${crm}/appointments?date=2024-11-15T10:30`,
+      );
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar consultas: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar consultas, tente novamente mais tarde',
+      );
+    }
+  }
+
+  public async getConsultsByCrmAndCpf(crm: string, cpf: string): Promise<Consult[]> {
+    try {
+      const response: AxiosResponse<Consult[]> = await this.apiClient.get(
+        `/doctors/${crm}/patient/${cpf}/appointments`,
+      );
+      return response.data;
+    } catch (error) {
+      console.log(`Houve um erro ao buscar consultas: ${error}`);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        throw new APIError(error.response?.data.message);
+      }
+      throw new APIError(
+        'Houve um erro ao buscar consultas, tente novamente mais tarde',
+      );
+    }
+  }
+
+  public async createDoctor(doctor: Omit<Doctor, 'id'>): Promise<Doctor> {
     try {
       const response: AxiosResponse<Doctor> = await this.apiClient.post(
         '/doctors',
@@ -29,15 +84,18 @@ class DoctorService {
     } catch (error) {
       console.log(`Houve um erro ao criar médicos: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
+      throw new APIError(
         'Houve um erro ao criar médicos, tente novamente mais tarde',
       );
     }
   }
 
-  public async updateDoctor(crm: string, doctor: Doctor): Promise<Doctor> {
+  public async updateDoctor(
+    crm: string,
+    doctor: Omit<Doctor, 'id'>,
+  ): Promise<Doctor> {
     try {
       const response: AxiosResponse<Doctor> = await this.apiClient.put(
         `/doctors/${crm}`,
@@ -45,12 +103,12 @@ class DoctorService {
       );
       return response.data;
     } catch (error) {
-      console.log(`Houve um erro ao criar médicos: ${error}`);
+      console.log(`Houve um erro ao atualizar médicos: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
-        'Houve um erro ao criar médicos, tente novamente mais tarde',
+      throw new APIError(
+        'Houve um erro ao atualizar médicos, tente novamente mais tarde',
       );
     }
   }
@@ -59,15 +117,13 @@ class DoctorService {
     try {
       await this.apiClient.delete(`/doctors/${crm}`);
     } catch (error) {
-      console.log(`Houve um erro ao criar médicos: ${error}`);
+      console.log(`Houve um erro ao excluir médico: ${error}`);
       if (axios.isAxiosError(error) && error.response?.status === 400) {
-        throw new Error(error.response?.data.message);
+        throw new APIError(error.response?.data.message);
       }
-      throw new Error(
-        'Houve um erro ao criar médicos, tente novamente mais tarde',
+      throw new APIError(
+        'Houve um erro ao excluir médico, tente novamente mais tarde',
       );
     }
   }
 }
-
-export default new DoctorService();

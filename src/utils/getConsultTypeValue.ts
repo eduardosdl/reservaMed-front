@@ -1,9 +1,9 @@
-import consultTypes from '../data/consultTypes';
-import ConsultType from '../types/consultType';
+import { consultTypes } from '../data/consultTypes';
+import { ConsultType } from '../types/consult/consultType';
 
-export default function getConsultTypeValue(
-  label: string,
-): ConsultType | undefined {
+export function getConsultTypeValue(label?: string): ConsultType {
   const consultType = consultTypes.find(type => type.label === label);
-  return consultType ? (consultType.value as ConsultType) : undefined;
+  return consultType
+    ? (consultType.value as ConsultType)
+    : ConsultType.ROUTINE_CHECKUP;
 }

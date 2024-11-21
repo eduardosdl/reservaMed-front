@@ -1,21 +1,13 @@
 import { Outlet } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { NavDrawer } from '../../components/NavDrawer';
+import { DrawerProvider } from '../../contexts/drawerContext';
 
-import DrawerNav from '../../components/DrawerNav';
-
-export default function Admin() {
+export function Admin() {
   return (
-    <Box
-      sx={{
-        height: '100vh',
-        width: 1,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <DrawerNav />
-      <Outlet />
-    </Box>
+    <DrawerProvider>
+      <NavDrawer>
+        <Outlet />
+      </NavDrawer>
+    </DrawerProvider>
   );
 }

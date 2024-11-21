@@ -11,11 +11,12 @@ interface FormInputProps<T extends FieldValues> {
   maxLength?: number;
   type?: string;
   helpText?: string;
+  disabled?: boolean;
   formatValue?: (value: string) => string;
   onBlur?: () => void;
 }
 
-function FormInput<T extends FieldValues>({
+export function FormInput<T extends FieldValues>({
   name,
   control,
   label,
@@ -24,6 +25,7 @@ function FormInput<T extends FieldValues>({
   helpText,
   error = false,
   type = 'text',
+  disabled = false,
   formatValue,
   onBlur,
 }: FormInputProps<T>) {
@@ -39,6 +41,7 @@ function FormInput<T extends FieldValues>({
             label={label}
             type={type}
             error={error}
+            disabled={disabled}
             onChange={e => {
               field.onChange(
                 formatValue ? formatValue(e.target.value) : e.target.value,
@@ -59,5 +62,3 @@ function FormInput<T extends FieldValues>({
     </FormControl>
   );
 }
-
-export default FormInput;

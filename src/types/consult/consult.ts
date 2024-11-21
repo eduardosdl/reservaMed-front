@@ -1,8 +1,8 @@
-import ConsultType from './consultType';
-import Doctor from './doctor';
-import Patient from './patient';
+import { ConsultType } from './consultType';
+import { Doctor } from '../doctor';
+import { Patient } from '../patient';
 
-export default interface HistoryConsult {
+export interface Consult {
   id: number;
   doctor: Doctor;
   patient: Patient;
@@ -11,4 +11,5 @@ export default interface HistoryConsult {
   dateCancellation?: string;
   reasonCancellation?: string;
   status: string;
+  description?: string;
 }

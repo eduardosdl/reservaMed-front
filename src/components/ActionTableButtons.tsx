@@ -1,11 +1,12 @@
 import { ButtonGroup, IconButton } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+
 interface ActionTableButtonProps {
   onOpenEditModal: () => void;
   onDelete: () => void;
 }
 
-export default function ActionTableButton({
+export function ActionTableButton({
   onOpenEditModal,
   onDelete,
 }: ActionTableButtonProps) {

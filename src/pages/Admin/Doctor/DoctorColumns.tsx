@@ -1,15 +1,16 @@
 import { GridColDef } from '@mui/x-data-grid';
 
-import formatPhone from '../../../utils/formatPhone';
-import Doctor from '../../../types/doctor';
-import ActionTableButton from '../../../components/ActionTableButtons';
+import { ActionTableButton } from '../../../components/ActionTableButtons';
+
+import { formatPhone } from '../../../utils/formatPhone';
+import { Doctor } from '../../../types/doctor';
 
 interface DoctorColumsProps {
   handleOpenEditModal: (doctorData: Doctor) => void;
   handleDeleteDoctor: (crm: string) => void;
 }
 
-export default function DoctorColums({
+export function DoctorColumns({
   handleOpenEditModal,
   handleDeleteDoctor,
 }: DoctorColumsProps): GridColDef[] {

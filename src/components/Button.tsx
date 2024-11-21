@@ -10,7 +10,7 @@ interface CustomButtonProps extends ButtonProps {
   loading?: boolean;
 }
 
-export default function Button({
+export function Button({
   children,
   loading,
   variant = 'contained',

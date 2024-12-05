@@ -1,5 +1,11 @@
 import { ReactNode } from 'react';
-import { Event, LocalHospital, MenuBook, Person } from '@mui/icons-material';
+import {
+  Event,
+  LocalHospital,
+  MenuBook,
+  Person,
+  MedicalInformation,
+} from '@mui/icons-material';
 import {
   Box,
   Divider,
@@ -56,6 +62,11 @@ export function NavDrawer({ children }: NavDrawerProps) {
                 name="Pacientes"
                 icon={<Person />}
                 path="/admin/patients"
+              />
+              <NavItem
+                name="Especialidades"
+                icon={<MedicalInformation />}
+                path="/admin/specialities"
               />
               <NavItem
                 name="Médicos"

@@ -8,6 +8,7 @@ import { Consult } from './pages/Admin/Consult';
 import { RecordConsults } from './pages/Admin/RecordConsults';
 import { Doctor } from './pages/Doctor';
 import { Patient } from './pages/Patient';
+import { Specialty } from './pages/Admin/Specialty';
 
 export const routes = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ export const routes = createBrowserRouter([
     children: [
       { path: '', element: <Navigate to="patients" replace /> },
       { path: 'patients', element: <PatientsManagement /> },
+      { path: 'specialities', element: <Specialty /> },
       { path: 'doctors', element: <DoctorsManagement /> },
       { path: 'consults', element: <Consult /> },
       { path: 'consults/record', element: <RecordConsults /> },
